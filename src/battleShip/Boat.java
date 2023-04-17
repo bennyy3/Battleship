@@ -49,7 +49,7 @@ public class Boat {
 	 * increments the hit attribute
 	 * This is where set sunk attribute to true
 	 */
-	private void hit()
+	public void hit()
 	{
 		this.hits++;
 		if(this.getHits() == this.getLength()) this.setSunk(true);

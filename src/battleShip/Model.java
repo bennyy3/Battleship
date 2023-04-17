@@ -31,7 +31,7 @@ public class Model {
 			{
 				if(player.getDeffensiveGrid(i, j) == null)
 				{
-					result += "0 ";
+					result += ". ";
 				} else
 				{
 					Boat tempBoat = player.getDeffensiveGrid(i, j);
@@ -41,6 +41,52 @@ public class Model {
 			result += "\n";
 		}
 		return result;
+	}
+	
+	private String getOffenseBoard(Player player)
+	{
+		String result = "";
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				if(player.getOffensiveGrid(i, j) == GridState.EMPTY) result += ". ";
+				if(player.getOffensiveGrid(i, j) == GridState.HIT) result += "H ";
+				if(player.getOffensiveGrid(i, j) == GridState.MISS) result += "M ";
+				if(player.getOffensiveGrid(i, j) == GridState.SUNK) result += "S "; 
+			}
+			result += "\n";
+		}
+		return result;
+	}
+	
+	private void setSunk(Boat boat, Player defense, Player attacker)
+	{
+		if(boat.getSunk())
+		{
+			for(int i = 0; i < 10; i++)
+			{
+				for(int j = 0; j < 10; j++)
+				{
+					if(boat.equals(defense.getDeffensiveGrid(i, j))) attacker.setOffensiveGrid(i, j, GridState.SUNK);
+				}
+			}
+		}
+	}
+	
+	private void attackAgainst(int row, int col, Player defense, Player attacker)
+	{
+		if(defense.getDeffensiveGrid(row, col) == null)
+		{
+			attacker.setOffensiveGrid(row, col, GridState.MISS);
+		} else {
+			defense.getDeffensiveGrid(row, col).hit();
+			attacker.setOffensiveGrid(row, col, GridState.HIT);
+			setSunk(defense.getDeffensiveGrid(row, col), defense, attacker);
+			
+		}
+		
+		
 	}
 	
 	public String input(String input)
@@ -56,8 +102,6 @@ public class Model {
 			this.setGameState(GameState.STARTP1);
 			break;
 		case STARTP1:
-			
-			
 				int row = input.charAt(0) - 48; //converting from ASCII
 				int col = input.charAt(2) - 48; //converting from ASCII
 				int dir = input.charAt(4) - 48;
@@ -97,15 +141,33 @@ public class Model {
 			} else {
 				this.setGameState(GameState.P1);
 				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
+				result += "P1 Offesive Board:\n" + getOffenseBoard(p1)+"\n\n";
 				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
-				result += "P1";
+				result += "P2 Offesive Board:\n" + getOffenseBoard(p2)+"\n\n";
+				result += "P1 enter 'Row,Col' to attack";
 			}
 			break;
 		case P1:
-			result += "P1";
+			int row3 = input.charAt(0) - 48; //converting from ASCII
+			int col3 = input.charAt(2) - 48; //converting from ASCII
+			attackAgainst(row3, col3, p2, p1);
+			result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
+			result += "P1 Offesive Board:\n" + getOffenseBoard(p1)+"\n\n";
+			result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
+			result += "P2 Offesive Board:\n" + getOffenseBoard(p2)+"\n\n";
+			result += "P2 enter 'Row,Col' to attack";
+			this.setGameState(GameState.P2);
 			break;
 		case P2:
-			result += "P2";
+			int row4 = input.charAt(0) - 48; //converting from ASCII
+			int col4 = input.charAt(2) - 48; //converting from ASCII
+			attackAgainst(row4, col4, p1, p2);
+			result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
+			result += "P1 Offesive Board:\n" + getOffenseBoard(p1)+"\n\n";
+			result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
+			result += "P2 Offesive Board:\n" + getOffenseBoard(p2)+"\n\n";
+			result += "P1 enter 'Row,Col' to attack";
+			this.setGameState(GameState.P1);
 			break;
 		case END:
 			result += "END";
