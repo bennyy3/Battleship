@@ -113,9 +113,14 @@ public class Model {
 			this.setGameState(GameState.STARTP1);
 			break;
 		case STARTP1:
+				if(input.length() != 5) return "invalid input";
 				int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
 				int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
 				int dir = input.charAt(4) - 48;
+				if(row < 0 || row >= 10) return "invalid row";
+				if(col < 0 || col >= 10) return "invalid column";
+				if(dir != 0 && dir != 1) return "invalid direction";
+				
 				p1.placeBoat(row, col, dir, p1.getBoat(p1.getBoatsPlaced()));
 				
 				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
@@ -135,9 +140,13 @@ public class Model {
 			break;
 			
 		case STARTP2:
+				if(input.length() != 5) return "invalid input";
 				int row2 = input.charAt(0) - 97; //converting from ASCII
 				int col2 = input.charAt(2) - 48; //converting from ASCII
 				int dir2 = input.charAt(4) - 48;
+				if(row2 < 0 || row2 >= 10) return "invalid row";
+				if(col2 < 0 || col2 >= 10) return "invalid column";
+				if(dir2 != 0 && dir2 != 1) return "invalid direction";
 				p2.placeBoat(row2, col2, dir2, p2.getBoat(p2.getBoatsPlaced()));
 				
 				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
@@ -154,8 +163,12 @@ public class Model {
 			}
 			break;
 		case P1:
+			if(input.length() != 3) return "invalid input";
 			int row3 = input.charAt(0) - 97; //converting from ASCII
 			int col3 = input.charAt(2) - 48; //converting from ASCII
+			if(row3 < 0 || row3 >= 10) return "invalid row";
+			if(col3 < 0 || col3 >= 10) return "invalid column";
+			
 			attackAgainst(row3, col3, p2, p1);
 			if(checkLoss(p2))
 			{
@@ -169,8 +182,11 @@ public class Model {
 			}
 			break;
 		case P2:
+			if(input.length() != 3) return "invalid input";
 			int row4 = input.charAt(0) - 97; //converting from ASCII
 			int col4 = input.charAt(2) - 48; //converting from ASCII
+			if(row4 < 0 || row4 >= 10) return "invalid row";
+			if(col4 < 0 || col4 >= 10) return "invalid column";
 			attackAgainst(row4, col4, p1, p2);
 			
 			if(checkLoss(p1))
