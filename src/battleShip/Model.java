@@ -78,6 +78,22 @@ public class Model {
 		}
 	}
 	
+	private boolean checkEmpty(int row, int col, int dir, Player player, Boat boat)
+	{
+		for(int i = 0; i < boat.getLength(); i++)
+		{
+			if(dir == 0)
+			{
+				if(player.getDeffensiveGrid(row, col+i) != null) return false;
+			}
+			if(dir == 1)
+			{
+				if(player.getDeffensiveGrid(row+i, col) != null) return false;
+			}
+		}
+		return true;
+	}
+	
 	private void attackAgainst(int row, int col, Player defense, Player attacker)
 	{
 		if(defense.getDeffensiveGrid(row, col) == null)
@@ -117,9 +133,18 @@ public class Model {
 				int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
 				int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
 				int dir = input.charAt(4) - 48;
-				if(row < 0 || row >= 10) return "invalid row";
-				if(col < 0 || col >= 10) return "invalid column";
 				if(dir != 0 && dir != 1) return "invalid direction";
+				if(dir == 0)
+				{
+					if(row < 0 || row >=10) return "invalid row";
+					if(col < 0 || col + p1.getBoat(p1.getBoatsPlaced()).getLength() -1 >= 10) return "invalid column"; //out of bounds with boat length
+				}
+				if(dir == 1)
+				{
+					if(row < 0 || row + p1.getBoat(p1.getBoatsPlaced()).getLength() -1 >=10) return "invalid row";
+					if(col < 0 || col >= 10) return "invalid column"; //out of bounds with boat length
+				}
+				if(!checkEmpty(row, col, dir, p1, p1.getBoat(p1.getBoatsPlaced()))) return "a space is already occupied";
 				
 				p1.placeBoat(row, col, dir, p1.getBoat(p1.getBoatsPlaced()));
 				
@@ -144,9 +169,19 @@ public class Model {
 				int row2 = input.charAt(0) - 97; //converting from ASCII
 				int col2 = input.charAt(2) - 48; //converting from ASCII
 				int dir2 = input.charAt(4) - 48;
-				if(row2 < 0 || row2 >= 10) return "invalid row";
-				if(col2 < 0 || col2 >= 10) return "invalid column";
 				if(dir2 != 0 && dir2 != 1) return "invalid direction";
+				if(dir2 == 0)
+				{
+					if(row2 < 0 || row2 >=10) return "invalid row";
+					if(col2 < 0 || col2 + p2.getBoat(p2.getBoatsPlaced()).getLength() -1 >= 10) return "invalid column"; //out of bounds with boat length
+				}
+				if(dir2 == 1)
+				{
+					if(row2 < 0 || row2 + p2.getBoat(p2.getBoatsPlaced()).getLength() -1 >=10) return "invalid row";
+					if(col2 < 0 || col2 >= 10) return "invalid column"; //out of bounds with boat length
+				}
+				
+				if(!checkEmpty(row2, col2, dir2, p2, p2.getBoat(p2.getBoatsPlaced()))) return "a space is already occupied";
 				p2.placeBoat(row2, col2, dir2, p2.getBoat(p2.getBoatsPlaced()));
 				
 				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
