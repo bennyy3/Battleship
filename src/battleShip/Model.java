@@ -172,6 +172,35 @@ public class Model {
 	}
 	
 	/**
+	 * This is to make sure the placement of a boat is in a valid location
+	 * @param input
+	 * @param player
+	 * @return
+	 */
+	private String checkValidPlacement(String input, Player player)
+	{
+		if(input.length() != 5) return "invalid input";
+		int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
+		int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
+		int dir = input.charAt(4) - 48;
+		if(dir != 0 && dir != 1) return "invalid direction";
+		if(dir == 0)
+		{
+			if(row < 0 || row >=10) return "invalid row";
+			if(col < 0 || col + player.getBoat(player.getBoatsPlaced()).getLength() -1 >= 10) return "invalid column"; //out of bounds with boat length
+		}
+		if(dir == 1)
+		{
+			if(row < 0 || row + player.getBoat(player.getBoatsPlaced()).getLength() -1 >=10) return "invalid row";
+			if(col < 0 || col >= 10) return "invalid column"; //out of bounds with boat length
+		}
+		if(!checkEmpty(row, col, dir, player, player.getBoat(player.getBoatsPlaced()))) return "a space is already occupied";
+		
+		player.placeBoat(row, col, dir, player.getBoat(player.getBoatsPlaced()));
+		return "Placed Boat";
+	}
+	
+	/**
 	 * This method interprets input called by the controller class
 	 * @param input
 	 * @return a string prompting the next action
@@ -188,24 +217,8 @@ public class Model {
 			this.setGameState(GameState.STARTP1);
 			break;
 		case STARTP1:
-				if(input.length() != 5) return "invalid input";
-				int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
-				int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
-				int dir = input.charAt(4) - 48;
-				if(dir != 0 && dir != 1) return "invalid direction";
-				if(dir == 0)
-				{
-					if(row < 0 || row >=10) return "invalid row";
-					if(col < 0 || col + p1.getBoat(p1.getBoatsPlaced()).getLength() -1 >= 10) return "invalid column"; //out of bounds with boat length
-				}
-				if(dir == 1)
-				{
-					if(row < 0 || row + p1.getBoat(p1.getBoatsPlaced()).getLength() -1 >=10) return "invalid row";
-					if(col < 0 || col >= 10) return "invalid column"; //out of bounds with boat length
-				}
-				if(!checkEmpty(row, col, dir, p1, p1.getBoat(p1.getBoatsPlaced()))) return "a space is already occupied";
-				
-				p1.placeBoat(row, col, dir, p1.getBoat(p1.getBoatsPlaced()));
+				String placementCheckP1 = checkValidPlacement(input, p1);
+				if(!placementCheckP1.equals("Placed Boat")) return placementCheckP1; //invalid argument
 				
 				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
 				
@@ -214,7 +227,7 @@ public class Model {
 				result += "P1 Enter 'Row,Col,Direction' to place Boat of length "
 						+ p1.getBoat(p1.getBoatsPlaced()).getLength() + " NOTE 0 Horizontal, 1 Vertical";
 				
-			} else {
+			} else { //begin the print statement for the next gameState, a little confusing I know, but it must go right here
 				this.setGameState(GameState.STARTP2);
 				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
 				result += "P2 Enter 'Row,Col,Direction' to place Boat of length "
@@ -224,32 +237,17 @@ public class Model {
 			break;
 			
 		case STARTP2:
-				if(input.length() != 5) return "invalid input";
-				int row2 = input.charAt(0) - 97; //converting from ASCII
-				int col2 = input.charAt(2) - 48; //converting from ASCII
-				int dir2 = input.charAt(4) - 48;
-				if(dir2 != 0 && dir2 != 1) return "invalid direction";
-				if(dir2 == 0)
-				{
-					if(row2 < 0 || row2 >=10) return "invalid row";
-					if(col2 < 0 || col2 + p2.getBoat(p2.getBoatsPlaced()).getLength() -1 >= 10) return "invalid column"; //out of bounds with boat length
-				}
-				if(dir2 == 1)
-				{
-					if(row2 < 0 || row2 + p2.getBoat(p2.getBoatsPlaced()).getLength() -1 >=10) return "invalid row";
-					if(col2 < 0 || col2 >= 10) return "invalid column"; //out of bounds with boat length
-				}
-				
-				if(!checkEmpty(row2, col2, dir2, p2, p2.getBoat(p2.getBoatsPlaced()))) return "a space is already occupied";
-				p2.placeBoat(row2, col2, dir2, p2.getBoat(p2.getBoatsPlaced()));
-				
-				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
+			String placementCheckP2 = checkValidPlacement(input, p2);
+			if(!placementCheckP2.equals("Placed Boat")) return placementCheckP2; //invalid argument
+			
+			if(input.length() != 5) return "invalid input";
+			result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
 				
 			if(p2.getBoatsPlaced() < 5)
 			{
 				result += "P2 Enter 'Row,Col,Direction' to place Boat of length "
 						+ p2.getBoat(p2.getBoatsPlaced()).getLength() + "NOTE 0 Horizontal, 1 Vertical";
-			} else {
+			} else { //begin the print statement for the next gameState
 				this.setGameState(GameState.P1);
 				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
 				result += "P1 Offesive Board:\n" + getOffenseBoard(p1)+"\n\n";
