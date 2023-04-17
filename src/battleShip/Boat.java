@@ -18,13 +18,20 @@ public class Boat {
 	private boolean sunk;
 	
 	/*
+	 * This is a quick id for the boat
+	 * will be a number 1 to 5
+	 */
+	private int boatNumber;
+	
+	/*
 	 * Constructor for the Boat Class
 	 */
-	public Boat(int length)
+	public Boat(int length, int boatNumber)
 	{
 		this.setLength(length);
 		this.setSunk(false);
 		this.hits = 0;
+		this.boatNumber = boatNumber;
 	}
 	
 	/**
@@ -80,6 +87,15 @@ public class Boat {
 	public boolean getSunk()
 	{
 		return this.sunk;
+	}
+	
+	/**
+	 * Getter for the boatNumber
+	 * @return boatNumber
+	 */
+	public int getBoatNumber()
+	{
+		return this.boatNumber;
 	}
 	
 }

@@ -5,6 +5,9 @@ public class Model {
 	private Player p2;
 	private GameState gameState;
 	
+	/**
+	 * Default constructor for Model class
+	 */
 	public Model()
 	{
 		this.p1 = new Player();
@@ -12,16 +15,30 @@ public class Model {
 		this.gameState = GameState.START;
 	}
 	
+	/**
+	 * setter for gameState
+	 * @param state ENUM GameState
+	 */
 	private void setGameState(GameState state)
 	{
 		this.gameState = state;
 	}
 	
+	/**
+	 * Getter for the gameState
+	 * @return gameState
+	 */
 	private GameState getGameState()
 	{
 		return this.gameState;
 	}
 	
+	/**
+	 * Get a string visual of the defense board of a particular player object
+	 * . means empty, otherwise will display the boatNumber to show location of boats
+	 * @param player
+	 * @return a string representation of the defensive board
+	 */
 	private String getDefenseBoard(Player player)
 	{
 		String row = "abcdefghij";
@@ -37,7 +54,7 @@ public class Model {
 				} else
 				{
 					Boat tempBoat = player.getDeffensiveGrid(i, j);
-					result += tempBoat.getLength() + " ";
+					result += tempBoat.getBoatNumber() + " ";
 				}
 			}
 			result += "\n";
@@ -45,6 +62,15 @@ public class Model {
 		return result;
 	}
 	
+	/**
+	 * Get a string visual of the Offense Board
+	 * . means empty
+	 * H means HIT
+	 * M means MISS
+	 * S means SUNK
+	 * @param player
+	 * @return a string that visualized the Offensive Board
+	 */
 	private String getOffenseBoard(Player player)
 	{
 		String result = "  0 1 2 3 4 5 6 7 8 9\n";
@@ -64,6 +90,12 @@ public class Model {
 		return result;
 	}
 	
+	/**
+	 * This sets the grid state of any sunk boat to sunk on the offensive map
+	 * @param boat, The boat that has just been attacked, so it needs to check if its sunk to update offensive map
+	 * @param defense, The defender so that we can check locations on their map
+	 * @param attacker, the player who just took an attack
+	 */
 	private void setSunk(Boat boat, Player defense, Player attacker)
 	{
 		if(boat.getSunk())
@@ -72,12 +104,22 @@ public class Model {
 			{
 				for(int j = 0; j < 10; j++)
 				{
+					//Loop through the map until we get a match on the boat, we need to turn those spots to sunk
 					if(boat.equals(defense.getDeffensiveGrid(i, j))) attacker.setOffensiveGrid(i, j, GridState.SUNK);
 				}
 			}
 		}
 	}
 	
+	/**
+	 * This is an input constraint method used to make sure boats are not placed on top of each other
+	 * @param row
+	 * @param col
+	 * @param dir, 0 means horizontal and 1 means vertical
+	 * @param player, the player who is attempting to place a boat
+	 * @param boat, the boat being placed is used to find length
+	 * @return true if there is no collision and all spots are open to place a new boat
+	 */
 	private boolean checkEmpty(int row, int col, int dir, Player player, Boat boat)
 	{
 		for(int i = 0; i < boat.getLength(); i++)
@@ -94,6 +136,13 @@ public class Model {
 		return true;
 	}
 	
+	/**
+	 * given a row and column, we see if the attacker, hit, missed, or sunk an enemy boat.
+	 * @param row
+	 * @param col
+	 * @param defense, player who is being attacked
+	 * @param attacker, the player actively attacking
+	 */
 	private void attackAgainst(int row, int col, Player defense, Player attacker)
 	{
 		if(defense.getDeffensiveGrid(row, col) == null)
@@ -107,6 +156,11 @@ public class Model {
 		}
 	}
 	
+	/**
+	 * Check to see if the defensive player's boats are all sunk
+	 * @param defense, the player who was just attacked
+	 * @return if all the defensive player's boats are sunk
+	 */
 	private boolean checkLoss(Player defense)
 	{
 		boolean result = true;
@@ -117,6 +171,11 @@ public class Model {
 		return result;
 	}
 	
+	/**
+	 * This method interprets input called by the controller class
+	 * @param input
+	 * @return a string prompting the next action
+	 */
 	public String input(String input)
 	{	
 		String result = "";
