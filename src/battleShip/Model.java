@@ -1,8 +1,20 @@
 package battleShip;
 
 public class Model {
+	
+	/**
+	 * player 1 object
+	 */
 	private Player p1;
+	
+	/**
+	 * player 2 object
+	 */
 	private Player p2;
+	
+	/**
+	 * Keep track of what phase of the game we're in
+	 */
 	private GameState gameState;
 	
 	/**
@@ -143,8 +155,15 @@ public class Model {
 	 * @param defense, player who is being attacked
 	 * @param attacker, the player actively attacking
 	 */
-	private void attackAgainst(int row, int col, Player defense, Player attacker)
+	private String attack(String input, Player defense, Player attacker)
 	{
+		if(input.length() != 3) return "invalid input";
+		int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
+		int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
+		if(row < 0 || row >= 10) return "invalid row";
+		if(col < 0 || col >= 10) return "invalid column";
+		if(!(attacker.getOffensiveGrid(row, col) == GridState.EMPTY)) return "space has already been attacked";
+		
 		if(defense.getDeffensiveGrid(row, col) == null)
 		{
 			attacker.setOffensiveGrid(row, col, GridState.MISS);
@@ -154,6 +173,8 @@ public class Model {
 			setSunk(defense.getDeffensiveGrid(row, col), defense, attacker);
 			
 		}
+		
+		return "attack";
 	}
 	
 	/**
@@ -247,6 +268,7 @@ public class Model {
 			{
 				result += "P2 Enter 'Row,Col,Direction' to place Boat of length "
 						+ p2.getBoat(p2.getBoatsPlaced()).getLength() + "NOTE 0 Horizontal, 1 Vertical";
+				
 			} else { //begin the print statement for the next gameState
 				this.setGameState(GameState.P1);
 				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
@@ -255,13 +277,8 @@ public class Model {
 			}
 			break;
 		case P1:
-			if(input.length() != 3) return "invalid input";
-			int row3 = input.charAt(0) - 97; //converting from ASCII
-			int col3 = input.charAt(2) - 48; //converting from ASCII
-			if(row3 < 0 || row3 >= 10) return "invalid row";
-			if(col3 < 0 || col3 >= 10) return "invalid column";
+			if(!attack(input, p2, p1).equals("attack")) return attack(input, p2, p1); //This will change with GUI
 			
-			attackAgainst(row3, col3, p2, p1);
 			if(checkLoss(p2))
 			{
 				result = "Player 1 Wins!";
@@ -274,12 +291,7 @@ public class Model {
 			}
 			break;
 		case P2:
-			if(input.length() != 3) return "invalid input";
-			int row4 = input.charAt(0) - 97; //converting from ASCII
-			int col4 = input.charAt(2) - 48; //converting from ASCII
-			if(row4 < 0 || row4 >= 10) return "invalid row";
-			if(col4 < 0 || col4 >= 10) return "invalid column";
-			attackAgainst(row4, col4, p1, p2);
+			if(!attack(input, p1, p2).equals("attack")) return attack(input, p1, p2); //This will change with GUI
 			
 			if(checkLoss(p1))
 			{
