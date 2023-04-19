@@ -3,6 +3,10 @@ Requirements and Planning
 10x10 grid playing board
 A player has 2 grids in view: their defensive and offensive grid.
 
+The defensive grid shows your boats and the offensive grid shows where you have attacked.
+
+The defensive grid stores pointers to a players boat objects. The offensive grid stores GridStates (Hit, Miss, Sunk, Empty)
+
 Ships are:
 Carrier		5
 Battleship	4
@@ -11,40 +15,18 @@ Submarine	3
 Patrol Boat	2
 
 Game Phases
-1. Start Page
+1. Start Phase
+	Waits for the user to enter anything on the command line and will display directions for player 1
+	
 2. Placing ships (ends when both players have placed each ship)
+	Player 1 will place all of their ships first
+	Player 2 will then place all of their ships
 3. Game play
 	- p1 begins by selecting empty location on offensive grid
-	- game returns "miss", "hit", or "sunk" and updates view
+	- Game updates the view
 	- turn flips into p2 and repeat
 	
 4. End of Game (victory occurs for the player who has sunk all 5 of the opponent ships)
-
-MVC
-
-
-Things that the Grid could do before getting jobs split up
-	Defensive grid
-	- Store locations of defensive boats
-	- Display defensive boats
-	
-	offensive grid
-	- Store locations of offensive attacks
-	- Display either empty, hit, sunk
-	- Track location of each attack to prevent a repeat location
-
-offensiveGrid[10][10] = ENUM 'empty' 'hit' 'miss'
-boat[10][10] pointing to a boat object
-
-offensive player chooses grid location (0,0)
-	if model.isValidMove()
-	{
-		if boat[0][0] is empty
-			offensiveGrid[0][0] = 'miss'
-		else
-			boat[0][0].hit();
-			offensiveGrid[0][0] = 'hit'
-	}
 
 Boat Class:
 A boat must track
@@ -52,4 +34,16 @@ A boat must track
 	- how many hits it has taken
 	- sunk boolean
 		make true when length = hits
+		
+Player Class:
+	This avoids duplicating information for player 1 and player 2
+	Keeps track of a players 2 boards and boats
+	
+Model Class:
+	The input function will take any string input and decide what to do.
+	This is the rule book of the game
+	includes many helper methods
+	
+Controller
+	This is where Main lives for now
 

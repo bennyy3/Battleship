@@ -48,7 +48,7 @@ public class Model {
 	/**
 	 * Get a string visual of the defense board of a particular player object
 	 * . means empty, otherwise will display the boatNumber to show location of boats
-	 * @param player
+	 * @param player, the player who's defensive board to get
 	 * @return a string representation of the defensive board
 	 */
 	private String getDefenseBoard(Player player)
@@ -124,7 +124,7 @@ public class Model {
 	}
 	
 	/**
-	 * This is an input constraint method used to make sure boats are not placed on top of each other
+	 * This is an input constraint method check if a location on the defensive board is empty or not
 	 * @param row
 	 * @param col
 	 * @param dir, 0 means horizontal and 1 means vertical
@@ -150,12 +150,13 @@ public class Model {
 	
 	/**
 	 * given a row and column, we see if the attacker, hit, missed, or sunk an enemy boat.
+	 * Included is input constraints
 	 * @param row
 	 * @param col
 	 * @param defense, player who is being attacked
 	 * @param attacker, the player actively attacking
 	 */
-	private String attack(String input, Player defense, Player attacker)
+	private String attack(String input, Player attacker, Player defense)
 	{
 		if(input.length() != 3) return "invalid input";
 		int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
@@ -163,18 +164,22 @@ public class Model {
 		if(row < 0 || row >= 10) return "invalid row";
 		if(col < 0 || col >= 10) return "invalid column";
 		if(!(attacker.getOffensiveGrid(row, col) == GridState.EMPTY)) return "space has already been attacked";
+		//end constraints
 		
+		String result = "";
 		if(defense.getDeffensiveGrid(row, col) == null)
 		{
 			attacker.setOffensiveGrid(row, col, GridState.MISS);
+			result = "MISS ";
 		} else {
 			defense.getDeffensiveGrid(row, col).hit();
 			attacker.setOffensiveGrid(row, col, GridState.HIT);
 			setSunk(defense.getDeffensiveGrid(row, col), defense, attacker);
+			result = "HIT ";
 			
 		}
 		
-		return "attack";
+		return result + "attack"; //This method might change to boolean for GUI
 	}
 	
 	/**
@@ -184,12 +189,8 @@ public class Model {
 	 */
 	private boolean checkLoss(Player defense)
 	{
-		boolean result = true;
-		for(int i = 0; i < 5; i++)
-		{
-			if(!defense.getBoat(i).getSunk()) result = false; //if any boat is not sunk return false
-		}
-		return result;
+		if(defense.boatsRemaining() == 0) return true;
+		return false;
 	}
 	
 	/**
@@ -222,7 +223,8 @@ public class Model {
 	}
 	
 	/**
-	 * This method interprets input called by the controller class
+	 * This method interprets input called by the controller class, controls logic of the game
+	 * This method looks pretty gross now, and will look better without having to create text visual output.
 	 * @param input
 	 * @return a string prompting the next action
 	 */
@@ -248,7 +250,7 @@ public class Model {
 				result += "P1 Enter 'Row,Col,Direction' to place Boat of length "
 						+ p1.getBoat(p1.getBoatsPlaced()).getLength() + " NOTE 0 Horizontal, 1 Vertical";
 				
-			} else { //begin the print statement for the next gameState, a little confusing I know, but it must go right here
+			} else { //begin the print statement for the next gameState, a little confusing I know, but it must go right here, this is a pattern
 				this.setGameState(GameState.STARTP2);
 				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
 				result += "P2 Enter 'Row,Col,Direction' to place Boat of length "
@@ -277,7 +279,9 @@ public class Model {
 			}
 			break;
 		case P1:
-			if(!attack(input, p2, p1).equals("attack")) return attack(input, p2, p1); //This will change with GUI
+			String attackResult = attack(input, p1, p2);
+			if(!attackResult.contains("attack")) return attackResult; //This will change with GUI
+			result += attackResult + "\n\n";
 			
 			if(checkLoss(p2))
 			{
@@ -291,7 +295,9 @@ public class Model {
 			}
 			break;
 		case P2:
-			if(!attack(input, p1, p2).equals("attack")) return attack(input, p1, p2); //This will change with GUI
+			String attackResult2 = attack(input, p2, p1);
+			if(!attackResult2.contains("attack")) return attackResult2; //This will change with GUI
+			result += attackResult2 + "\n\n";
 			
 			if(checkLoss(p1))
 			{
