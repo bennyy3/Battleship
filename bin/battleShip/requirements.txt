@@ -5,7 +5,7 @@ A player has 2 grids in view: their defensive and offensive grid.
 
 The defensive grid shows your boats and the offensive grid shows where you have attacked.
 
-The defensive grid stores pointers to a players boat objects. The offensive grid stores GridStates (Hit, Miss, Sunk, Empty)
+The defensive grid stores pointers to a player's boat objects. The offensive grid stores GridStates (Hit, Miss, Sunk, Empty)
 
 Ships are:
 Carrier		5
