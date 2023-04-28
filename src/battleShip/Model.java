@@ -94,9 +94,9 @@ public class Model {
 			for(int j = 0; j < 10; j++)
 			{
 				if(player.getOffensiveGrid(i, j) == GridState.EMPTY) result[i][j] = " ";
-				if(player.getOffensiveGrid(i, j) == GridState.HIT) result[i][j] = "HIT";
-				if(player.getOffensiveGrid(i, j) == GridState.MISS) result[i][j] = "MISS";
-				if(player.getOffensiveGrid(i, j) == GridState.SUNK) result[i][j] = "SUNK"; 
+				if(player.getOffensiveGrid(i, j) == GridState.HIT) result[i][j] = "H";
+				if(player.getOffensiveGrid(i, j) == GridState.MISS) result[i][j] = "M";
+				if(player.getOffensiveGrid(i, j) == GridState.SUNK) result[i][j] = "S"; 
 			}
 		}
 		return result;
@@ -158,12 +158,21 @@ public class Model {
 	 */
 	private String attack(String input, Player attacker, Player defense)
 	{
-		if(input.length() != 3) return "invalid input";
-		int row = input.charAt(0) - 48; //converting from ASCII expecting a-j
-		int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
+		if(input.charAt(1) == 100) return "Invalid, pick a square on top grid";
+		if(attacker == p1)
+		{
+			if(input.charAt(0) == 50) return "Invalid, must pick square on top grid of Player 1";
+		}
+		if(attacker == p2)
+		{
+			if(input.charAt(0) == 49) return "Invalid, must pick a square on top grid of Player 2";
+		}
+		
+		int row = input.charAt(4) - 48; //converting from ASCII expecting a-j
+		int col = input.charAt(6) - 48; //converting from ASCII expecting 0-9
 		if(row < 0 || row >= 10) return "invalid row";
 		if(col < 0 || col >= 10) return "invalid column";
-		if(!(attacker.getOffensiveGrid(row, col) == GridState.EMPTY)) return "space has already been attacked";
+		if(!(attacker.getOffensiveGrid(row, col) == GridState.EMPTY)) return "Space has already been attacked";
 		//end constraints
 		
 		String result = "";
@@ -179,7 +188,7 @@ public class Model {
 			
 		}
 		
-		return result + "attack"; //This method might change to boolean for GUI
+		return "attack"; //This method might change to boolean for GUI
 	}
 	
 	/**
@@ -280,7 +289,7 @@ public class Model {
 			break;
 		case P1:
 			String attackResult = attack(input, p1, p2);
-			if(!attackResult.contains("attack")) return attackResult; //This will change with GUI
+			if(!attackResult.equals("attack")) return attackResult; //This will change with GUI
 			
 			if(checkLoss(p2))
 			{
@@ -294,7 +303,7 @@ public class Model {
 			break;
 		case P2:
 			String attackResult2 = attack(input, p2, p1);
-			if(!attackResult2.contains("attack")) return attackResult2; //This will change with GUI
+			if(!attackResult2.equals("attack")) return attackResult2; //This will change with GUI
 			
 			if(checkLoss(p1))
 			{
