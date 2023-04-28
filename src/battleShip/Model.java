@@ -51,25 +51,23 @@ public class Model {
 	 * @param player, the player who's defensive board to get
 	 * @return a string representation of the defensive board
 	 */
-	private String getDefenseBoard(Player player)
+	public String[][] getDefenseBoard(Player player)
 	{
-		String row = "abcdefghij";
-		String result = "  0 1 2 3 4 5 6 7 8 9\n";
+		player = p1;
+		String[][] result = new String[10][10];
 		for(int i = 0; i < 10; i++)
 		{
-			result += row.charAt(i) + " ";
 			for(int j = 0; j < 10; j++)
 			{
 				if(player.getDeffensiveGrid(i, j) == null)
 				{
-					result += ". ";
+					result[i][j] = " ";
 				} else
 				{
 					Boat tempBoat = player.getDeffensiveGrid(i, j);
-					result += tempBoat.getBoatNumber() + " ";
+					result[i][j] = "" + tempBoat.getBoatNumber();
 				}
 			}
-			result += "\n";
 		}
 		return result;
 	}
@@ -159,7 +157,7 @@ public class Model {
 	private String attack(String input, Player attacker, Player defense)
 	{
 		if(input.length() != 3) return "invalid input";
-		int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
+		int row = input.charAt(0) - 48; //converting from ASCII expecting a-j
 		int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
 		if(row < 0 || row >= 10) return "invalid row";
 		if(col < 0 || col >= 10) return "invalid column";
@@ -201,10 +199,11 @@ public class Model {
 	 */
 	private String checkValidPlacement(String input, Player player)
 	{
-		if(input.length() != 5) return "invalid input";
-		int row = input.charAt(0) - 97; //converting from ASCII expecting a-j
-		int col = input.charAt(2) - 48; //converting from ASCII expecting 0-9
-		int dir = input.charAt(4) - 48;
+		//if(input.length() != 5) return "invalid input";
+		int row = input.charAt(3) - 48; //converting from ASCII expecting a-j
+		int col = input.charAt(5) - 48; //converting from ASCII expecting 0-9
+		//int dir = input.charAt(4) - 48;
+		int dir = 0;
 		if(dir != 0 && dir != 1) return "invalid direction";
 		if(dir == 0)
 		{
