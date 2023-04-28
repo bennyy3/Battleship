@@ -15,9 +15,9 @@ public class View extends BorderPane{
 	Button[][] defButton;
 	Button[][] offButton;
 	
-	public View(EventHandler<ActionEvent> event)
+	public View(EventHandler<ActionEvent> event, int id)
 	{
-		super();	
+		super();
 		offGrid = new GridPane();
 		defGrid = new GridPane();
 		defButton = new Button[10][10];
@@ -28,7 +28,7 @@ public class View extends BorderPane{
 			for(int j = 0; j < 10; j++)
 			{
 				defButton[i][j] = new Button();
-				defButton[i][j].setId("def"+ i + "," + j);
+				defButton[i][j].setId(id+"def"+ i + "," + j);
 				//defButton[i][j].setText(counter.toString());
 				defButton[i][j].setPrefHeight(40);
 				defButton[i][j].setPrefWidth(40);
@@ -37,7 +37,7 @@ public class View extends BorderPane{
 				defGrid.add(defButton[i][j], j, i);
 				
 				offButton[i][j] = new Button();
-				offButton[i][j].setId("off"+ i + "," + j);
+				offButton[i][j].setId(id+"off"+ i + "," + j);
 				//offButton[i][j].setText(counter.toString());
 				offButton[i][j].setPrefHeight(40);
 				offButton[i][j].setPrefWidth(40);

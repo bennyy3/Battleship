@@ -24,7 +24,7 @@ public class Model {
 	{
 		this.p1 = new Player();
 		this.p2 = new Player();
-		this.gameState = GameState.START;
+		this.gameState = GameState.STARTP1;
 	}
 	
 	/**
@@ -51,9 +51,11 @@ public class Model {
 	 * @param player, the player who's defensive board to get
 	 * @return a string representation of the defensive board
 	 */
-	public String[][] getDefenseBoard(Player player)
+	public String[][] getDefenseBoard(int playerID)
 	{
-		player = p1;
+		Player player = null;
+		if(playerID == 1) player = p1;
+		if(playerID == 2) player = p2;
 		String[][] result = new String[10][10];
 		for(int i = 0; i < 10; i++)
 		{
@@ -81,8 +83,11 @@ public class Model {
 	 * @param player
 	 * @return a string that visualized the Offensive Board
 	 */
-	private String getOffenseBoard(Player player)
+	private String getOffenseBoard(int playerID)
 	{
+		Player player = null;
+		if(playerID == 1) player = p1;
+		if(playerID == 2) player = p2;
 		String result = "  0 1 2 3 4 5 6 7 8 9\n";
 		String row = "abcdefghij";
 		for(int i = 0; i < 10; i++)
@@ -199,10 +204,10 @@ public class Model {
 	 */
 	private String checkValidPlacement(String input, Player player)
 	{
-		//if(input.length() != 5) return "invalid input";
-		int row = input.charAt(3) - 48; //converting from ASCII expecting a-j
-		int col = input.charAt(5) - 48; //converting from ASCII expecting 0-9
-		//int dir = input.charAt(4) - 48;
+		if(player == p1 && input.charAt(0) != 49) return "invalid defensive position for player 1";
+		if(player == p2 && input.charAt(0) != 50) return "invalid defensive position for player 2";
+		int row = input.charAt(4) - 48; //converting from ASCII expecting a-j
+		int col = input.charAt(6) - 48; //converting from ASCII expecting 0-9
 		int dir = 0;
 		if(dir != 0 && dir != 1) return "invalid direction";
 		if(dir == 0)
@@ -222,6 +227,15 @@ public class Model {
 	}
 	
 	/**
+	 * The message to display at the start
+	 * @return
+	 */
+	public String startInstructions()
+	{
+		return "P1 Place your ships on the bottom grid";
+	}
+	
+	/**
 	 * This method interprets input called by the controller class, controls logic of the game
 	 * This method looks pretty gross now, and will look better without having to create text visual output.
 	 * @param input
@@ -232,29 +246,17 @@ public class Model {
 		String result = "";
 		switch(getGameState())
 		{
-		case START:
-			result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
-			result += "Enter; 'Row,Col,Direction' to place Boat of length "
-					+ p1.getBoat(0).getLength() + " Note 0 Horizontal, 1 Vertical";
-			this.setGameState(GameState.STARTP1);
-			break;
+		
 		case STARTP1:
-				String placementCheckP1 = checkValidPlacement(input, p1);
-				if(!placementCheckP1.equals("Placed Boat")) return placementCheckP1; //invalid argument
-				
-				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
-				
+			String placementCheckP1 = checkValidPlacement(input, p1);
+			if(!placementCheckP1.equals("Placed Boat")) return placementCheckP1; //invalid argument
 			if(p1.getBoatsPlaced() < 5)
 			{
-				result += "P1 Enter 'Row,Col,Direction' to place Boat of length "
-						+ p1.getBoat(p1.getBoatsPlaced()).getLength() + " NOTE 0 Horizontal, 1 Vertical";
+				result = "P1 Place your ships on the bottom grid";
 				
 			} else { //begin the print statement for the next gameState, a little confusing I know, but it must go right here, this is a pattern
 				this.setGameState(GameState.STARTP2);
-				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
-				result += "P2 Enter 'Row,Col,Direction' to place Boat of length "
-						+ p2.getBoat(0).getLength() + " "
-								+ "NOTE 0 Horizontal, 1 Vertical";
+				result = "P2 Place your ships on the bottom grid";
 			}
 			break;
 			
@@ -263,54 +265,45 @@ public class Model {
 			if(!placementCheckP2.equals("Placed Boat")) return placementCheckP2; //invalid argument
 			
 			if(input.length() != 5) return "invalid input";
-			result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
 				
 			if(p2.getBoatsPlaced() < 5)
 			{
-				result += "P2 Enter 'Row,Col,Direction' to place Boat of length "
-						+ p2.getBoat(p2.getBoatsPlaced()).getLength() + "NOTE 0 Horizontal, 1 Vertical";
+				result = "P2 Place your ships on the bottom grid";
 				
 			} else { //begin the print statement for the next gameState
 				this.setGameState(GameState.P1);
-				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
-				result += "P1 Offesive Board:\n" + getOffenseBoard(p1)+"\n\n";
-				result += "P1 enter 'Row,Col' to attack";
+				result = "P1 choose a square on the top grid to attack";
 			}
 			break;
 		case P1:
 			String attackResult = attack(input, p1, p2);
 			if(!attackResult.contains("attack")) return attackResult; //This will change with GUI
-			result += attackResult + "\n\n";
 			
 			if(checkLoss(p2))
 			{
 				result = "Player 1 Wins!";
 				this.setGameState(GameState.END);
 			} else {
-				result += "P2 Defensive Board:\n" + getDefenseBoard(p2) + "\n\n";
-				result += "P2 Offesive Board:\n" + getOffenseBoard(p2)+"\n\n";
-				result += "P2 enter 'Row,Col' to attack";
+				
+				result += "P2 choose a square on the top grid to attack";
 				this.setGameState(GameState.P2);
 			}
 			break;
 		case P2:
 			String attackResult2 = attack(input, p2, p1);
 			if(!attackResult2.contains("attack")) return attackResult2; //This will change with GUI
-			result += attackResult2 + "\n\n";
 			
 			if(checkLoss(p1))
 			{
 				result = "Player 2 Wins!";
 				this.setGameState(GameState.END);
 			} else {
-				result += "P1 Defensive Board:\n" + getDefenseBoard(p1) +"\n\n";
-				result += "P1 Offesive Board:\n" + getOffenseBoard(p1)+"\n\n";
-				result += "P1 enter 'Row,Col' to attack";
+				result += "P1 choose a square on the top grid to attack";
 				this.setGameState(GameState.P1);
 			}
 			break;
 		case END:
-			result += "END";
+			result = "END";
 			break;
 		}
 		return result;

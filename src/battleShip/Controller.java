@@ -6,26 +6,39 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Controller extends Application implements EventHandler<ActionEvent> {
 
 	private Model model;
-	private View view;
+	private View viewP1;
+	private View viewP2;
 	
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage arg0) throws Exception {
 		try {
 			model = new Model();
-			view = new View(this);
-			Scene scene = new Scene(view, 1000, 1000);
-			primaryStage.setScene(scene); //stage is a window
-			primaryStage.show(); //puts it on the screen
+			viewP1 = new View(this, 1);
+			viewP2 = new View(this, 2);
+			Scene sceneP1 = new Scene(viewP1, 500, 1000);
+			Scene sceneP2 = new Scene(viewP2, 500, 1000);
+			viewP1.setMessage(model.startInstructions());
+			viewP2.setMessage(model.startInstructions());
+			Stage stageP1 = new Stage();
+			Stage stageP2 = new Stage();
+			stageP1.setTitle("Player 1");
+			stageP2.setTitle("Player 2");
+			stageP1.setScene(sceneP1); //stage is a window
+			stageP2.setScene(sceneP2);
+			stageP1.show(); //puts it on the screen
+			stageP2.show();
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("Battle Ship");
+			alert.setContentText("Press Enter To Start");
+			alert.showAndWait();
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 			System.err.println("You done messed up");
@@ -42,13 +55,14 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	public void handle(ActionEvent arg0) {
 		Button button = (Button) arg0.getSource();
 		String message = model.input(button.getId());
-		view.setMessage(message);
+		viewP1.setMessage(message);
 		updateView();
 	}
 	
 	private void updateView()
 	{
-		view.updateView(model.getDefenseBoard(new Player()));
+		viewP1.updateView(model.getDefenseBoard(1));
+		viewP2.updateView(model.getDefenseBoard(2));
 	}
 	
 }
