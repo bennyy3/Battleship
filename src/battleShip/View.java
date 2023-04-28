@@ -14,10 +14,13 @@ public class View extends BorderPane{
 	GridPane defGrid;
 	Button[][] defButton;
 	Button[][] offButton;
+	Button rotate;
+	private Integer rotateState;
 	
 	public View(EventHandler<ActionEvent> event, int id)
 	{
 		super();
+		this.rotateState = 1;
 		offGrid = new GridPane();
 		defGrid = new GridPane();
 		defButton = new Button[10][10];
@@ -28,7 +31,7 @@ public class View extends BorderPane{
 			for(int j = 0; j < 10; j++)
 			{
 				defButton[i][j] = new Button();
-				defButton[i][j].setId(id+"def"+ i + "," + j);
+				defButton[i][j].setId(getRotateState()+""+id+"def"+ i + "," + j); //TODO needs rotate state to update
 				//defButton[i][j].setText(counter.toString());
 				defButton[i][j].setPrefHeight(40);
 				defButton[i][j].setPrefWidth(40);
@@ -37,7 +40,7 @@ public class View extends BorderPane{
 				defGrid.add(defButton[i][j], j, i);
 				
 				offButton[i][j] = new Button();
-				offButton[i][j].setId(id+"off"+ i + "," + j);
+				offButton[i][j].setId(getRotateState()+""+id+"off"+ i + "," + j);
 				//offButton[i][j].setText(counter.toString());
 				offButton[i][j].setPrefHeight(40);
 				offButton[i][j].setPrefWidth(40);
@@ -51,10 +54,17 @@ public class View extends BorderPane{
 		vbox.getChildren().add(offGrid);
 		vbox.getChildren().add(defGrid);
 		message = new Text();
-		//model.input("start");
-		message.setText("hello");
+		rotate = new Button("rotate");
+		rotate.setPrefHeight(10);
+		rotate.setPrefWidth(40);
+		rotate.setOnAction((evt) -> {
+			toggleRotate();
+		});
+		rotate.setStyle("-fx-background-color: #eec4ff; ");
+		rotate.setId("rotate");
 		setCenter(vbox);
-		setBottom(message);
+		setRight(message);
+		setLeft(rotate);
 	}
 	
 	public void setMessage(String message)
@@ -72,6 +82,22 @@ public class View extends BorderPane{
 				offButton[i][j].setText(offenseBoard[i][j]);
 			}
 		}
+	}
+	
+	private void toggleRotate()
+	{
+		if(this.rotateState == 1)
+		{
+			this.rotateState = 0;
+		}
+		else
+		{
+			this.rotateState = 1;
+		}
+	}
+	private int getRotateState()
+	{
+		return this.rotateState;
 	}
 	
 }

@@ -158,18 +158,18 @@ public class Model {
 	 */
 	private String attack(String input, Player attacker, Player defense)
 	{
-		if(input.charAt(1) == 100) return "Invalid, pick a square on top grid";
+		if(input.charAt(2) == 100) return "Invalid, pick a square on top grid";
 		if(attacker == p1)
 		{
-			if(input.charAt(0) == 50) return "Invalid, must pick square on top grid of Player 1";
+			if(input.charAt(1) == 50) return "Invalid, must pick square on top grid of Player 1";
 		}
 		if(attacker == p2)
 		{
-			if(input.charAt(0) == 49) return "Invalid, must pick a square on top grid of Player 2";
+			if(input.charAt(1) == 49) return "Invalid, must pick a square on top grid of Player 2";
 		}
 		
-		int row = input.charAt(4) - 48; //converting from ASCII expecting a-j
-		int col = input.charAt(6) - 48; //converting from ASCII expecting 0-9
+		int row = input.charAt(5) - 48; //converting from ASCII expecting a-j
+		int col = input.charAt(7) - 48; //converting from ASCII expecting 0-9
 		if(row < 0 || row >= 10) return "invalid row";
 		if(col < 0 || col >= 10) return "invalid column";
 		if(!(attacker.getOffensiveGrid(row, col) == GridState.EMPTY)) return "Space has already been attacked";
@@ -212,18 +212,18 @@ public class Model {
 	{
 		if(player == p1)
 		{
-			if(input.charAt(0) != 49) return "invalid defensive position for player 1"; //ASCII '1'
+			if(input.charAt(1) != 49) return "invalid defensive position for player 1"; //ASCII '1'
 		}
 		else if(player == p2)
 		{
-			if(input.charAt(0) != 50) return "invalid defensive position for player 2"; //ASCII '2'
+			if(input.charAt(1) != 50) return "invalid defensive position for player 2"; //ASCII '2'
 		}
 		
-		if(input.charAt(1) != 100) return "must place on the bottom grid"; //100 is ASCII for 'd'
+		if(input.charAt(2) != 100) return "must place on the bottom grid"; //100 is ASCII for 'd'
 		
-		int row = input.charAt(4) - 48; //converting from ASCII expecting 0-9
-		int col = input.charAt(6) - 48; //converting from ASCII expecting 0-9
-		int dir = 0;
+		int row = input.charAt(5) - 48; //converting from ASCII expecting 0-9
+		int col = input.charAt(7) - 48; //converting from ASCII expecting 0-9
+		int dir = input.charAt(0) - 48;
 		if(dir != 0 && dir != 1) return "invalid direction";
 		if(dir == 0)
 		{
