@@ -40,7 +40,7 @@ public class Model {
 	 * Getter for the gameState
 	 * @return gameState
 	 */
-	private GameState getGameState()
+	public GameState getGameState()
 	{
 		return this.gameState;
 	}
@@ -320,6 +320,5 @@ public class Model {
 		}
 		return result;
 	}
-	
 	
 }

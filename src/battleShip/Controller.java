@@ -54,7 +54,11 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	@Override
 	public void handle(ActionEvent arg0) {
 		Button button = (Button) arg0.getSource();
-		String message = model.input(button.getId());
+		int rotation = 0;
+		if(model.getGameState() == GameState.STARTP1) rotation = viewP1.getRotateState();
+		else rotation = viewP2.getRotateState();
+		
+		String message = model.input(rotation + button.getId());
 		viewP1.setMessage(message);
 		viewP2.setMessage(message);
 		updateView();

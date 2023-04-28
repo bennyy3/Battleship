@@ -15,7 +15,7 @@ public class View extends BorderPane{
 	Button[][] defButton;
 	Button[][] offButton;
 	Button rotate;
-	private Integer rotateState;
+	private int rotateState;
 	
 	public View(EventHandler<ActionEvent> event, int id)
 	{
@@ -31,7 +31,7 @@ public class View extends BorderPane{
 			for(int j = 0; j < 10; j++)
 			{
 				defButton[i][j] = new Button();
-				defButton[i][j].setId(getRotateState()+""+id+"def"+ i + "," + j); //TODO needs rotate state to update
+				defButton[i][j].setId(id+"def"+ i + "," + j); //TODO needs rotate state to update
 				//defButton[i][j].setText(counter.toString());
 				defButton[i][j].setPrefHeight(40);
 				defButton[i][j].setPrefWidth(40);
@@ -40,7 +40,7 @@ public class View extends BorderPane{
 				defGrid.add(defButton[i][j], j, i);
 				
 				offButton[i][j] = new Button();
-				offButton[i][j].setId(getRotateState()+""+id+"off"+ i + "," + j);
+				offButton[i][j].setId(id+"off"+ i + "," + j);
 				//offButton[i][j].setText(counter.toString());
 				offButton[i][j].setPrefHeight(40);
 				offButton[i][j].setPrefWidth(40);
@@ -95,7 +95,8 @@ public class View extends BorderPane{
 			this.rotateState = 1;
 		}
 	}
-	private int getRotateState()
+	
+	public int getRotateState()
 	{
 		return this.rotateState;
 	}
