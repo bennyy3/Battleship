@@ -56,13 +56,14 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		Button button = (Button) arg0.getSource();
 		String message = model.input(button.getId());
 		viewP1.setMessage(message);
+		viewP2.setMessage(message);
 		updateView();
 	}
 	
 	private void updateView()
 	{
-		viewP1.updateView(model.getDefenseBoard(1));
-		viewP2.updateView(model.getDefenseBoard(2));
+		viewP1.updateView(model.getDefenseBoard(1), model.getOffenseBoard(1));
+		viewP2.updateView(model.getDefenseBoard(2), model.getOffenseBoard(2));
 	}
 	
 }

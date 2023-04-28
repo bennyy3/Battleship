@@ -62,13 +62,14 @@ public class View extends BorderPane{
 		this.message.setText(message);
 	}
 	
-	public void updateView(String[][] defenseBoard)
+	public void updateView(String[][] defenseBoard, String[][] offenseBoard)
 	{
 		for(int i = 0; i < 10; i++)
 		{
 			for(int j = 0; j < 10; j++)
 			{
 				defButton[i][j].setText(defenseBoard[i][j]);
+				offButton[i][j].setText(offenseBoard[i][j]);
 			}
 		}
 	}

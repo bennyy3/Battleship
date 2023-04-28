@@ -83,24 +83,21 @@ public class Model {
 	 * @param player
 	 * @return a string that visualized the Offensive Board
 	 */
-	private String getOffenseBoard(int playerID)
+	public String[][] getOffenseBoard(int playerID)
 	{
 		Player player = null;
 		if(playerID == 1) player = p1;
 		if(playerID == 2) player = p2;
-		String result = "  0 1 2 3 4 5 6 7 8 9\n";
-		String row = "abcdefghij";
+		String[][] result = new String[10][10];
 		for(int i = 0; i < 10; i++)
 		{
-			result += row.charAt(i) + " ";
 			for(int j = 0; j < 10; j++)
 			{
-				if(player.getOffensiveGrid(i, j) == GridState.EMPTY) result += ". ";
-				if(player.getOffensiveGrid(i, j) == GridState.HIT) result += "H ";
-				if(player.getOffensiveGrid(i, j) == GridState.MISS) result += "M ";
-				if(player.getOffensiveGrid(i, j) == GridState.SUNK) result += "S "; 
+				if(player.getOffensiveGrid(i, j) == GridState.EMPTY) result[i][j] = " ";
+				if(player.getOffensiveGrid(i, j) == GridState.HIT) result[i][j] = "HIT";
+				if(player.getOffensiveGrid(i, j) == GridState.MISS) result[i][j] = "MISS";
+				if(player.getOffensiveGrid(i, j) == GridState.SUNK) result[i][j] = "SUNK"; 
 			}
-			result += "\n";
 		}
 		return result;
 	}
@@ -204,9 +201,18 @@ public class Model {
 	 */
 	private String checkValidPlacement(String input, Player player)
 	{
-		if(player == p1 && input.charAt(0) != 49) return "invalid defensive position for player 1";
-		if(player == p2 && input.charAt(0) != 50) return "invalid defensive position for player 2";
-		int row = input.charAt(4) - 48; //converting from ASCII expecting a-j
+		if(player == p1)
+		{
+			if(input.charAt(0) != 49) return "invalid defensive position for player 1"; //ASCII '1'
+		}
+		else if(player == p2)
+		{
+			if(input.charAt(0) != 50) return "invalid defensive position for player 2"; //ASCII '2'
+		}
+		
+		if(input.charAt(1) != 100) return "must place on the bottom grid"; //100 is ASCII for 'd'
+		
+		int row = input.charAt(4) - 48; //converting from ASCII expecting 0-9
 		int col = input.charAt(6) - 48; //converting from ASCII expecting 0-9
 		int dir = 0;
 		if(dir != 0 && dir != 1) return "invalid direction";
@@ -263,9 +269,6 @@ public class Model {
 		case STARTP2:
 			String placementCheckP2 = checkValidPlacement(input, p2);
 			if(!placementCheckP2.equals("Placed Boat")) return placementCheckP2; //invalid argument
-			
-			if(input.length() != 5) return "invalid input";
-				
 			if(p2.getBoatsPlaced() < 5)
 			{
 				result = "P2 Place your ships on the bottom grid";
