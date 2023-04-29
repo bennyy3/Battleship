@@ -88,12 +88,15 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 				}
 				if(model.getGameState() == GameState.STARTP2)
 				{
+					viewP1.resetHighlight();
 					if(button.getId().charAt(0) != 50) return;
 					if(evt.getEventType() == MouseEvent.MOUSE_ENTERED)
 						viewP2.highlightPlacement(model.getCurrentBoatLength(), row, col);
 					else
 						viewP2.offHighlight(model.getCurrentBoatLength(), row, col);
 				}
+				else viewP2.resetHighlight();
+			
 		   } 
 		};
 	

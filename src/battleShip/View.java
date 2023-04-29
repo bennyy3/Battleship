@@ -103,12 +103,45 @@ public class View extends BorderPane{
 	}
 
 	public void highlightPlacement(int currentBoatLength, int row, int col) {
-		defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
+		int rotate = this.getRotateState();
+		for(int i = 0; i < currentBoatLength; i++)
+		{
+			if(rotate == 0)
+			{
+				if(i+col <= 9) defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
+			}
+			if(rotate == 1)
+			{
+				if(i+row <= 9) defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
+			}
+		}
 	}
 
 	public void offHighlight(int currentBoatLength, int row, int col) {
-		defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+		int rotate = this.getRotateState();
+		for(int i = 0; i < currentBoatLength; i++)
+		{
+			if(rotate == 0)
+			{
+				if(i+col <= 9) defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+			}
+			if(rotate == 1)
+			{
+				if(i+row <= 9) defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+			}
+		}
 		
+	}
+	
+	public void resetHighlight()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				defButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+			}
+		}
 	}
 	
 	
