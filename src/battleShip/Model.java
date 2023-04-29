@@ -321,4 +321,12 @@ public class Model {
 		return result;
 	}
 	
+	public int getCurrentBoatLength()
+	{
+		Player player = new Player();
+		if(getGameState() == GameState.STARTP1) player = p1;
+		else player = p2;
+		return player.getBoat(player.getBoatsPlaced()).getLength();
+	}
+	
 }

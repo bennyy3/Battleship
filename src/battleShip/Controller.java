@@ -5,6 +5,7 @@ import java.util.Scanner;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -21,8 +22,8 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	public void start(Stage arg0) throws Exception {
 		try {
 			model = new Model();
-			viewP1 = new View(this, 1);
-			viewP2 = new View(this, 2);
+			viewP1 = new View(this, mouseEvent, 1);
+			viewP2 = new View(this, mouseEvent, 2);
 			Scene sceneP1 = new Scene(viewP1, 800, 1000);
 			Scene sceneP2 = new Scene(viewP2, 800, 1000);
 			viewP1.setMessage(model.startInstructions());
@@ -65,15 +66,35 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		updateView();
 	}
 	
-	public void handle(MouseEvent evt)
-	{
-		int i = 0;
-	}
-	
 	private void updateView()
 	{
 		viewP1.updateView(model.getDefenseBoard(1), model.getOffenseBoard(1));
 		viewP2.updateView(model.getDefenseBoard(2), model.getOffenseBoard(2));
 	}
+	
+	EventHandler<MouseEvent> mouseEvent = new EventHandler<MouseEvent>() { 
+		   @Override 
+		   public void handle(MouseEvent evt) {
+			   Button button = (Button) evt.getSource();
+				int row = button.getId().charAt(4) - 48;
+				int col = button.getId().charAt(6) - 48;
+				if(model.getGameState() == GameState.STARTP1)
+				{
+					if(button.getId().charAt(0) != 49) return;
+					if(evt.getEventType() == MouseEvent.MOUSE_ENTERED)
+						viewP1.highlightPlacement(model.getCurrentBoatLength(), row, col);
+					else
+						viewP1.offHighlight(model.getCurrentBoatLength(), row, col);
+				}
+				if(model.getGameState() == GameState.STARTP2)
+				{
+					if(button.getId().charAt(0) != 50) return;
+					if(evt.getEventType() == MouseEvent.MOUSE_ENTERED)
+						viewP2.highlightPlacement(model.getCurrentBoatLength(), row, col);
+					else
+						viewP2.offHighlight(model.getCurrentBoatLength(), row, col);
+				}
+		   } 
+		};
 	
 }

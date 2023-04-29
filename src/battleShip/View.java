@@ -18,7 +18,7 @@ public class View extends BorderPane{
 	Button rotate;
 	private int rotateState;
 	
-	public View(EventHandler<ActionEvent> event, int id)
+	public View(EventHandler<ActionEvent> event, EventHandler<MouseEvent> mouseEvent, int id)
 	{
 		super();
 		this.rotateState = 1;
@@ -33,22 +33,16 @@ public class View extends BorderPane{
 			{
 				defButton[row][col] = new Button();
 				defButton[row][col].setId(id+"def"+ row + "," + col); //TODO needs rotate state to update
-				//defButton[i][j].setText(counter.toString());
 				defButton[row][col].setPrefHeight(40);
 				defButton[row][col].setPrefWidth(40);
 				defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
 				defButton[row][col].setOnAction(event);
-				defButton[row][col].setOnMouseEntered((evt)->{
-					onHover(evt);
-				});
-				defButton[row][col].setOnMouseExited((evt)->{
-					offHover(evt);
-				});
+				defButton[row][col].setOnMouseEntered(mouseEvent);
+				defButton[row][col].setOnMouseExited(mouseEvent);
 				defGrid.add(defButton[row][col], col, row);
 				
 				offButton[row][col] = new Button();
 				offButton[row][col].setId(id+"off"+ row + "," + col);
-				//offButton[i][j].setText(counter.toString());
 				offButton[row][col].setPrefHeight(40);
 				offButton[row][col].setPrefWidth(40);
 				offButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #ffd89e; ");
@@ -107,21 +101,15 @@ public class View extends BorderPane{
 	{
 		return this.rotateState;
 	}
-	
-	private void onHover(MouseEvent evt)
-	{
-		Button button = (Button) evt.getSource();
-		int row = button.getId().charAt(4) - 48;
-		int col = button.getId().charAt(6) - 48;
+
+	public void highlightPlacement(int currentBoatLength, int row, int col) {
 		defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
 	}
-	
-	private void offHover(MouseEvent evt)
-	{
-		Button button = (Button) evt.getSource();
-		int row = button.getId().charAt(4) - 48;
-		int col = button.getId().charAt(6) - 48;
+
+	public void offHighlight(int currentBoatLength, int row, int col) {
 		defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+		
 	}
+	
 	
 }
