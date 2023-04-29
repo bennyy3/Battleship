@@ -3,6 +3,7 @@ package battleShip;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -26,27 +27,33 @@ public class View extends BorderPane{
 		defButton = new Button[10][10];
 		offButton = new Button[10][10];
 		
-		for(int i = 0; i < 10; i++)
+		for(int row = 0; row < 10; row++)
 		{
-			for(int j = 0; j < 10; j++)
+			for(int col = 0; col < 10; col++)
 			{
-				defButton[i][j] = new Button();
-				defButton[i][j].setId(id+"def"+ i + "," + j); //TODO needs rotate state to update
+				defButton[row][col] = new Button();
+				defButton[row][col].setId(id+"def"+ row + "," + col); //TODO needs rotate state to update
 				//defButton[i][j].setText(counter.toString());
-				defButton[i][j].setPrefHeight(40);
-				defButton[i][j].setPrefWidth(40);
-				defButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
-				defButton[i][j].setOnAction(event);
-				defGrid.add(defButton[i][j], j, i);
+				defButton[row][col].setPrefHeight(40);
+				defButton[row][col].setPrefWidth(40);
+				defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+				defButton[row][col].setOnAction(event);
+				defButton[row][col].setOnMouseEntered((evt)->{
+					onHover(evt);
+				});
+				defButton[row][col].setOnMouseExited((evt)->{
+					offHover(evt);
+				});
+				defGrid.add(defButton[row][col], col, row);
 				
-				offButton[i][j] = new Button();
-				offButton[i][j].setId(id+"off"+ i + "," + j);
+				offButton[row][col] = new Button();
+				offButton[row][col].setId(id+"off"+ row + "," + col);
 				//offButton[i][j].setText(counter.toString());
-				offButton[i][j].setPrefHeight(40);
-				offButton[i][j].setPrefWidth(40);
-				offButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #ffd89e; ");
-				offButton[i][j].setOnAction(event);
-				offGrid.add(offButton[i][j], j, i);
+				offButton[row][col].setPrefHeight(40);
+				offButton[row][col].setPrefWidth(40);
+				offButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #ffd89e; ");
+				offButton[row][col].setOnAction(event);
+				offGrid.add(offButton[row][col], col, row);
 			}
 		}
 		
@@ -55,16 +62,16 @@ public class View extends BorderPane{
 		vbox.getChildren().add(defGrid);
 		message = new Text();
 		rotate = new Button("rotate");
-		rotate.setPrefHeight(10);
-		rotate.setPrefWidth(40);
+		rotate.setPrefHeight(80);
+		rotate.setPrefWidth(100);
 		rotate.setOnAction((evt) -> {
 			toggleRotate();
 		});
 		rotate.setStyle("-fx-background-color: #eec4ff; ");
 		rotate.setId("rotate");
 		setCenter(vbox);
-		setRight(message);
-		setLeft(rotate);
+		setBottom(message);
+		setRight(rotate);
 	}
 	
 	public void setMessage(String message)
@@ -99,6 +106,22 @@ public class View extends BorderPane{
 	public int getRotateState()
 	{
 		return this.rotateState;
+	}
+	
+	private void onHover(MouseEvent evt)
+	{
+		Button button = (Button) evt.getSource();
+		int row = button.getId().charAt(4) - 48;
+		int col = button.getId().charAt(6) - 48;
+		defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
+	}
+	
+	private void offHover(MouseEvent evt)
+	{
+		Button button = (Button) evt.getSource();
+		int row = button.getId().charAt(4) - 48;
+		int col = button.getId().charAt(6) - 48;
+		defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
 	}
 	
 }

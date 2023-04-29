@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class Controller extends Application implements EventHandler<ActionEvent> {
@@ -22,8 +23,8 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 			model = new Model();
 			viewP1 = new View(this, 1);
 			viewP2 = new View(this, 2);
-			Scene sceneP1 = new Scene(viewP1, 500, 1000);
-			Scene sceneP2 = new Scene(viewP2, 500, 1000);
+			Scene sceneP1 = new Scene(viewP1, 800, 1000);
+			Scene sceneP2 = new Scene(viewP2, 800, 1000);
 			viewP1.setMessage(model.startInstructions());
 			viewP2.setMessage(model.startInstructions());
 			Stage stageP1 = new Stage();
@@ -62,6 +63,11 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		viewP1.setMessage(message);
 		viewP2.setMessage(message);
 		updateView();
+	}
+	
+	public void handle(MouseEvent evt)
+	{
+		int i = 0;
 	}
 	
 	private void updateView()
