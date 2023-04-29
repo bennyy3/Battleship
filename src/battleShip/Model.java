@@ -294,7 +294,7 @@ public class Model {
 			if(checkLoss(p2))
 			{
 				result = "Player 1 Wins!";
-				this.setGameState(GameState.END);
+				this.setGameState(GameState.P1WIN);
 			} else {
 				
 				result += "P2 choose a square on the top grid to attack";
@@ -308,15 +308,17 @@ public class Model {
 			if(checkLoss(p1))
 			{
 				result = "Player 2 Wins!";
-				this.setGameState(GameState.END);
+				this.setGameState(GameState.P2WIN);
 			} else {
 				result += "P1 choose a square on the top grid to attack";
 				this.setGameState(GameState.P1);
 			}
 			break;
-		case END:
-			result = "END";
+		case P1WIN:
+			result = "Player 1 Wins!";
 			break;
+		case P2WIN:
+			result = "Player 2 Wins!";
 		}
 		return result;
 	}

@@ -5,5 +5,6 @@ public enum GameState {
 	STARTP2,
 	P1,
 	P2,
-	END
+	P1WIN,
+	P2WIN
 }

@@ -21,7 +21,7 @@ public class View extends BorderPane{
 	public View(EventHandler<ActionEvent> event, EventHandler<MouseEvent> mouseEvent, int id)
 	{
 		super();
-		this.rotateState = 1;
+		this.rotateState = 0;
 		offGrid = new GridPane();
 		defGrid = new GridPane();
 		defButton = new Button[10][10];
@@ -33,6 +33,7 @@ public class View extends BorderPane{
 			{
 				defButton[row][col] = new Button();
 				defButton[row][col].setId(id+"def"+ row + "," + col); //TODO needs rotate state to update
+				defButton[row][col].setText(" ");
 				defButton[row][col].setPrefHeight(40);
 				defButton[row][col].setPrefWidth(40);
 				defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
@@ -43,6 +44,7 @@ public class View extends BorderPane{
 				
 				offButton[row][col] = new Button();
 				offButton[row][col].setId(id+"off"+ row + "," + col);
+				offButton[row][col].setText(" ");
 				offButton[row][col].setPrefHeight(40);
 				offButton[row][col].setPrefWidth(40);
 				offButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #ffd89e; ");
@@ -80,7 +82,12 @@ public class View extends BorderPane{
 			for(int j = 0; j < 10; j++)
 			{
 				defButton[i][j].setText(defenseBoard[i][j]);
+				if(!defenseBoard[i][j].equals(" ")) defButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #e591ff; ");
+				else defButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
 				offButton[i][j].setText(offenseBoard[i][j]);
+				if(offenseBoard[i][j].equals("M")) offButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
+				if(offenseBoard[i][j].equals("H")) offButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #ffef94; ");
+				if(offenseBoard[i][j].equals("S")) offButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #ed4e4e; ");
 			}
 		}
 	}
@@ -123,26 +130,23 @@ public class View extends BorderPane{
 		{
 			if(rotate == 0)
 			{
-				if(i+col <= 9) defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+				if(i+col <= 9)
+				{
+					if(!defButton[row][col+i].getText().equals(" "))
+						defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #e591ff; ");
+					else defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+				}
 			}
 			if(rotate == 1)
 			{
-				if(i+row <= 9) defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+				if(i+row <= 9)
+				{
+					if(!defButton[row+i][col].getText().equals(" "))
+						defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #e591ff; ");
+					else defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+				}
 			}
 		}
 		
 	}
-	
-	public void resetHighlight()
-	{
-		for(int i = 0; i < 10; i++)
-		{
-			for(int j = 0; j < 10; j++)
-			{
-				defButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
-			}
-		}
-	}
-	
-	
 }
