@@ -10,14 +10,69 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class View extends BorderPane{
+	
+	/**
+	 * Directions and messages from the model about the game
+	 */
 	private Text message;
+	
+	/**
+	 * The upper grid of Battleship, filled with button objects
+	 */
 	GridPane offGrid;
+	
+	/**
+	 * The bottom grid of Battleship, filled with button objects
+	 */
 	GridPane defGrid;
+	
+	/**
+	 * a grid of buttons assigned to the defGrid
+	 */
 	Button[][] defButton;
+	
+	/**
+	 * a grid of buttons assigned to the offGrid
+	 */
 	Button[][] offButton;
+	
+	/**
+	 * Button that will rotate the direction of a ship placement
+	 */
 	Button rotate;
+	
+	/**
+	 * Keeps track of the rotation direction. 0 for horizontal and 1 for vertical
+	 */
 	private int rotateState;
 	
+	/**
+	 * these strings are for style of the View and make the code easier to read and keep track of
+	 */
+	String emptyDefenseStyle = "-fx-border-color: black; -fx-background-color: #e591ff; ";
+	String emptyOffenseStyle = "-fx-border-color: black; -fx-background-color: #ffd89e; ";
+	String defenseBoatStyle = "-fx-border-color: black; -fx-background-color: #a3d3e3; ";
+	String missStyle = "-fx-border-color: black; -fx-background-color: #c4c4c4; ";
+	String hitStyle = "-fx-border-color: black; -fx-background-color: #ffef94; ";
+	String sunkStyle = "-fx-border-color: black; -fx-background-color: #ed4e4e; ";
+	String rotateStyle = "-fx-background-color: #eec4ff; ";
+	
+	
+	/**
+	 * Constructor for View
+	 * @param event, the action event handler in the Controller. Handles button presses
+	 * @param mouseEvent, the mouse event handler in the Controller. Used for hover highlighting
+	 * @param id, used to track p1 and p2
+	 * 
+	 * NOTE: the button id is used to send its information as input to the model
+	 * this is not the most ideal way to transfer information, but here we are
+	 * example:
+	 *	 defButton[row][col].setId(id+"def"+ row + "," + col);
+	 * id 1 means player1, id 2 means player 2
+	 * def means this is a defensive button
+	 * row and col identify its location
+	 * "1def0,0" means its player1 defensive grid button at location (0,0)
+	*/
 	public View(EventHandler<ActionEvent> event, EventHandler<MouseEvent> mouseEvent, int id)
 	{
 		super();
@@ -32,11 +87,11 @@ public class View extends BorderPane{
 			for(int col = 0; col < 10; col++)
 			{
 				defButton[row][col] = new Button();
-				defButton[row][col].setId(id+"def"+ row + "," + col); //TODO needs rotate state to update
+				defButton[row][col].setId(id+"def"+ row + "," + col);
 				defButton[row][col].setText(" ");
 				defButton[row][col].setPrefHeight(40);
 				defButton[row][col].setPrefWidth(40);
-				defButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+				defButton[row][col].setStyle(defenseBoatStyle);
 				defButton[row][col].setOnAction(event);
 				defButton[row][col].setOnMouseEntered(mouseEvent);
 				defButton[row][col].setOnMouseExited(mouseEvent);
@@ -47,7 +102,7 @@ public class View extends BorderPane{
 				offButton[row][col].setText(" ");
 				offButton[row][col].setPrefHeight(40);
 				offButton[row][col].setPrefWidth(40);
-				offButton[row][col].setStyle("-fx-border-color: black; -fx-background-color: #ffd89e; ");
+				offButton[row][col].setStyle(emptyOffenseStyle);
 				offButton[row][col].setOnAction(event);
 				offGrid.add(offButton[row][col], col, row);
 			}
@@ -63,18 +118,27 @@ public class View extends BorderPane{
 		rotate.setOnAction((evt) -> {
 			toggleRotate();
 		});
-		rotate.setStyle("-fx-background-color: #eec4ff; ");
+		rotate.setStyle(rotateStyle);
 		rotate.setId("rotate");
 		setCenter(vbox);
 		setBottom(message);
 		setRight(rotate);
 	}
 	
+	/**
+	 * setter for the message attribute
+	 * @param message
+	 */
 	public void setMessage(String message)
 	{
 		this.message.setText(message);
 	}
 	
+	/**
+	 * updates the view with the new information from the model/controller
+	 * @param defenseBoard, will either be empty or have a string identifying defense boats
+	 * @param offenseBoard, will contain either " ", 'H', 'M', 'S'
+	 */
 	public void updateView(String[][] defenseBoard, String[][] offenseBoard)
 	{
 		for(int i = 0; i < 10; i++)
@@ -82,16 +146,19 @@ public class View extends BorderPane{
 			for(int j = 0; j < 10; j++)
 			{
 				defButton[i][j].setText(defenseBoard[i][j]);
-				if(!defenseBoard[i][j].equals(" ")) defButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #e591ff; ");
-				else defButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+				if(!defenseBoard[i][j].equals(" ")) defButton[i][j].setStyle(emptyDefenseStyle);
+				else defButton[i][j].setStyle(defenseBoatStyle);
 				offButton[i][j].setText(offenseBoard[i][j]);
-				if(offenseBoard[i][j].equals("M")) offButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
-				if(offenseBoard[i][j].equals("H")) offButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #ffef94; ");
-				if(offenseBoard[i][j].equals("S")) offButton[i][j].setStyle("-fx-border-color: black; -fx-background-color: #ed4e4e; ");
+				if(offenseBoard[i][j].equals("M")) offButton[i][j].setStyle(missStyle);
+				if(offenseBoard[i][j].equals("H")) offButton[i][j].setStyle(hitStyle);
+				if(offenseBoard[i][j].equals("S")) offButton[i][j].setStyle(sunkStyle);
 			}
 		}
 	}
 	
+	/**
+	 * This method toggles the rotateState attribute between 0 and 1
+	 */
 	private void toggleRotate()
 	{
 		if(this.rotateState == 1)
@@ -104,26 +171,42 @@ public class View extends BorderPane{
 		}
 	}
 	
+	/**
+	 * 
+	 * @return the rotate state. 0 for horizontal, 1 for vertical
+	 */
 	public int getRotateState()
 	{
 		return this.rotateState;
 	}
 
+	/**
+	 * This method highlights the squares that new boat would be placed in
+	 * @param currentBoatLength, used to know how many squares to highlight
+	 * @param row, identifies the position of the boat
+	 * @param col
+	 */
 	public void highlightPlacement(int currentBoatLength, int row, int col) {
 		int rotate = this.getRotateState();
 		for(int i = 0; i < currentBoatLength; i++)
 		{
 			if(rotate == 0)
 			{
-				if(i+col <= 9) defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
+				if(i+col <= 9) defButton[row][col+i].setStyle(missStyle);
 			}
 			if(rotate == 1)
 			{
-				if(i+row <= 9) defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #c4c4c4; ");
+				if(i+row <= 9) defButton[row+i][col].setStyle(missStyle);
 			}
 		}
 	}
 
+	/**
+	 * This is a complimentary method of highlightPlacement that un-highlights after the mouse moves
+	 * @param currentBoatLength, used to know how many squares to un-highlight
+	 * @param row, identifies the position of the boat
+	 * @param col
+	 */
 	public void offHighlight(int currentBoatLength, int row, int col) {
 		int rotate = this.getRotateState();
 		for(int i = 0; i < currentBoatLength; i++)
@@ -133,8 +216,8 @@ public class View extends BorderPane{
 				if(i+col <= 9)
 				{
 					if(!defButton[row][col+i].getText().equals(" "))
-						defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #e591ff; ");
-					else defButton[row][col+i].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+						defButton[row][col+i].setStyle(emptyDefenseStyle);
+					else defButton[row][col+i].setStyle(defenseBoatStyle);
 				}
 			}
 			if(rotate == 1)
@@ -142,8 +225,8 @@ public class View extends BorderPane{
 				if(i+row <= 9)
 				{
 					if(!defButton[row+i][col].getText().equals(" "))
-						defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #e591ff; ");
-					else defButton[row+i][col].setStyle("-fx-border-color: black; -fx-background-color: #a3d3e3; ");
+						defButton[row+i][col].setStyle(emptyDefenseStyle);
+					else defButton[row+i][col].setStyle(defenseBoatStyle);
 				}
 			}
 		}

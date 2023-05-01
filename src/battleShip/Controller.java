@@ -14,8 +14,19 @@ import javafx.stage.Stage;
 
 public class Controller extends Application implements EventHandler<ActionEvent> {
 
+	/**
+	 * reference of the battleship model
+	 */
 	private Model model;
+	
+	/*
+	 * player 1's game board
+	 */
 	private View viewP1;
+	
+	/*
+	 * player 2's game board
+	 */
 	private View viewP2;
 	
 	@Override
@@ -24,8 +35,8 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 			model = new Model();
 			viewP1 = new View(this, mouseEvent, 1);
 			viewP2 = new View(this, mouseEvent, 2);
-			Scene sceneP1 = new Scene(viewP1, 800, 1000);
-			Scene sceneP2 = new Scene(viewP2, 800, 1000);
+			Scene sceneP1 = new Scene(viewP1, 500, 1000);
+			Scene sceneP2 = new Scene(viewP2, 500, 1000);
 			viewP1.setMessage(model.startInstructions());
 			viewP2.setMessage(model.startInstructions());
 			Stage stageP1 = new Stage();
@@ -53,6 +64,9 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 
 	}
 
+	/*
+	 * activated after a button press
+	 */
 	@Override
 	public void handle(ActionEvent arg0) {
 		Button button = (Button) arg0.getSource();
@@ -60,18 +74,25 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		if(model.getGameState() == GameState.STARTP1) rotation = viewP1.getRotateState();
 		else rotation = viewP2.getRotateState();
 		
-		String message = model.input(rotation + button.getId());
-		viewP1.setMessage(message);
+		String message = model.input(rotation + button.getId()); //This is where interaction with the model takes place
+		viewP1.setMessage(message); //resulting message from the model
 		viewP2.setMessage(message);
 		updateView();
 	}
 	
+	/**
+	 * calls to update both of player's views
+	 */
 	private void updateView()
 	{
 		viewP1.updateView(model.getDefenseBoard(1), model.getOffenseBoard(1));
 		viewP2.updateView(model.getDefenseBoard(2), model.getOffenseBoard(2));
 	}
 	
+	/**
+	 * This method helps highlight the defensive board during the placement phase.
+	 * it will gather information about what boat is about to be placed and give that to the view
+	 */
 	EventHandler<MouseEvent> mouseEvent = new EventHandler<MouseEvent>() { 
 		   @Override 
 		   public void handle(MouseEvent evt) {

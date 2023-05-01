@@ -323,6 +323,12 @@ public class Model {
 		return result;
 	}
 	
+	
+	/**
+	 * Gathers what boat is about to be placed returns the length of it
+	 * This is useful for highlighting the placement of a new boat
+	 * @return the length of the current boat
+	 */
 	public int getCurrentBoatLength()
 	{
 		Player player = new Player();
