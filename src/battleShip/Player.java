@@ -31,7 +31,7 @@ public class Player {
 	 */
 	public Player()
 	{
-		this.deffensiveGrid = new Boat[10][10];
+		this.deffensiveGrid = new Boat[10][10]; //public final static INT later
 		this.offensiveGrid = new GridState[10][10];
 		this.initOffensiveGrid();
 		this.boats = new Boat[5];

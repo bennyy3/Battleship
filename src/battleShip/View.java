@@ -19,7 +19,7 @@ public class View extends BorderPane{
 	/**
 	 * The upper grid of Battleship, filled with button objects
 	 */
-	GridPane offGrid;
+	GridPane offGrid; //TODO private
 	
 	/**
 	 * The bottom grid of Battleship, filled with button objects

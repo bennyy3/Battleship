@@ -29,10 +29,13 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	 */
 	private View viewP2;
 	
+	private Agent agent;
+	
 	@Override
 	public void start(Stage arg0) throws Exception {
 		try {
 			model = new Model();
+			agent = new Agent();
 			viewP1 = new View(this, mouseEvent, 1);
 			viewP2 = new View(this, mouseEvent, 2);
 			Scene sceneP1 = new Scene(viewP1, 500, 1000);
@@ -78,6 +81,13 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		viewP1.setMessage(message); //resulting message from the model
 		viewP2.setMessage(message);
 		updateView();
+		while(model.getGameState() == GameState.STARTP2 || model.getGameState() == GameState.P2)
+		{
+			this.model = agent.action(model);
+			updateView();
+		}
+			updateView();
+		
 	}
 	
 	/**

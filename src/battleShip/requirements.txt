@@ -46,4 +46,8 @@ Model Class:
 	
 Controller
 	This is where Main lives for now
+	
+	
+	close one window closes whole game
+	
 

@@ -83,7 +83,7 @@ public class Model {
 	 * @param player
 	 * @return a string that visualized the Offensive Board
 	 */
-	public String[][] getOffenseBoard(int playerID)
+	public String[][] getOffenseBoard(int playerID) //TODO getter for offensive grid and worry about text in the controller
 	{
 		Player player = null;
 		if(playerID == 1) player = p1;
@@ -108,7 +108,7 @@ public class Model {
 	 * @param defense, The defender so that we can check locations on their map
 	 * @param attacker, the player who just took an attack
 	 */
-	private void setSunk(Boat boat, Player defense, Player attacker)
+	private void setSunk(Boat boat, Player defense, Player attacker) //TODO pass in game state instead of defense
 	{
 		if(boat.getSunk())
 		{
@@ -196,7 +196,7 @@ public class Model {
 	 * @param defense, the player who was just attacked
 	 * @return if all the defensive player's boats are sunk
 	 */
-	private boolean checkLoss(Player defense)
+	private boolean checkLoss(Player defense) //TODO switch to a state
 	{
 		if(defense.boatsRemaining() == 0) return true;
 		return false;
