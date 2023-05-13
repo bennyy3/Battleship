@@ -323,7 +323,14 @@ public class Model {
 		return result;
 	}
 	
-	
+	public int getBoatLength(int playerID, int row, int col)
+	{
+		Player player;
+		if(playerID == 1) player = p1;
+		else player = p2;
+		return player.getDeffensiveGrid(row, col).getLength();
+		
+	}
 	/**
 	 * Gathers what boat is about to be placed returns the length of it
 	 * This is useful for highlighting the placement of a new boat
