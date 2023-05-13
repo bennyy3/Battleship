@@ -1,6 +1,5 @@
 package battleShip;
 
-import java.util.Random;
 import java.util.Scanner;
 
 import javafx.application.Application;
@@ -83,34 +82,13 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		viewP2.setMessage(message);
 		
 		agent.updateModel(model); //Giving a fresh copy of the recent turn/s
-		//while(model.getGameState() == GameState.STARTP2 || model.getGameState() == GameState.P2)
-		Random rand = new Random();
-		int repeat = 0;
-		while(repeat < 100) {
-		while(model.getGameState() == GameState.P1 || model.getGameState() == GameState.P2 || model.getGameState() == GameState.STARTP2 || model.getGameState() == GameState.STARTP1)
+		while(model.getGameState() == GameState.STARTP2 || model.getGameState() == GameState.P2)
 		{
-			if(model.getGameState() == GameState.P2 || model.getGameState() == GameState.STARTP2) this.model = agent.action();
-			else if(model.getGameState() == GameState.STARTP1) model.input(rand.nextInt(2)+"1def" + rand.nextInt(10) + "," + rand.nextInt(10));
-			else model.input("01off" + rand.nextInt(10) + "," + rand.nextInt(10));
-			agent.updateModel(model);
+			this.model = agent.action();
+			//updateView();
 		}
 			updateView();
-			int count = 0;
-			
-			for(int i = 0; i < 10; i++)
-			{
-				for(int j = 0; j < 10; j++)
-				{
-					if(!model.getOffenseBoard(2)[i][j].equals(" ")) count++;
-				}
-			}
-			System.out.println(count);
-			model = new Model();
-			agent = new Agent(model);
-			viewP1 = new View(this, mouseEvent, 1);
-			viewP2 = new View(this, mouseEvent, 2);
-			repeat++;
-		}
+		
 	}
 	
 	/**

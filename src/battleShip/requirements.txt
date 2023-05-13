@@ -50,18 +50,4 @@ Controller
 	
 	close one window closes whole game
 	
-Agent Stats 100 runs
-randomly picking hunt of the length of a boat left length either 2, 3, 4, or 5
-	mean = 51.5
-	min 33
-	max 77
-	med 51
-	sDev 9.9
-picking longest boat 100 runs
-	average 52
-	median 52
-	min 28
-	max 77
-	
-	
 

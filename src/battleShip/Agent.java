@@ -84,7 +84,7 @@ public class Agent {
 					break;
 				}
 			}
-			for(int i = 0; i < len - 1; i++) hitStack.pop();
+			for(int i = 0; i < len - 1 ; i++) hitStack.pop();
 			prevAttack = "S";
 		}
 		else prevAttack = "";
@@ -118,27 +118,13 @@ public class Agent {
 		else
 		{
 			Random rand = new Random();
-			return availableAdj.get(rand.nextInt(availableAdj.size()));
+			return availableAdj.get(rand.nextInt(availableAdj.size()-1));
 		}
 	}
 	
 	private String getHunt()
 	{
-		//int length = getLongestBoat(); //this is longest boat first approach
-		
-		Random rand = new Random();
-		int salt; //random number
-		int length; //the boat we are searching for
-		while(true)
-		{
-			salt = rand.nextInt(5);
-			if(boatsRemaining[salt] != 0)
-			{
-				length = boatsRemaining[salt];
-				break;
-			}
-		}
-		length = getLongestBoat();
+		int length = getLongestBoat();
 		ArrayList<String> list = new ArrayList<String>();
 		
 		for(int i = 0; i < 10; i++)
@@ -149,12 +135,11 @@ public class Agent {
 			}
 		}
 		
-		
-		
-		int upperbound = list.size();
-		salt = rand.nextInt(5); //We don't want to be completely predictable
-		if(upperbound == 0 || salt == 0) return rand.nextInt(10) + "," + rand.nextInt(10);
-		if(upperbound == 1) return list.get(0);
+		Random rand = new Random();
+		int upperbound = list.size() - 1;
+		int salt = rand.nextInt(5); //We don't want to be completely predictable
+		if(upperbound < 0 || salt == 0) return rand.nextInt(9) + "," + rand.nextInt(9);
+		if(upperbound == 0) return list.get(0);
 		else return list.get(rand.nextInt(upperbound));
 		
 	}
