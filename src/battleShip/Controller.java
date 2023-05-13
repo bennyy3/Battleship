@@ -96,8 +96,9 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	 */
 	private void updateView()
 	{
-		viewP1.updateView(model.getDefenseBoard(1), model.getOffenseBoard(1));
-		viewP2.updateView(model.getDefenseBoard(2), model.getOffenseBoard(2));
+		viewP1.updateViewDefense(model.getDefenseBoard(1));
+		viewP1.updateViewOffense(model.getOffenseBoard(1));
+		viewP2.updateViewOffense(model.getOffenseBoard(2));
 	}
 	
 	/**

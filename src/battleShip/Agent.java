@@ -53,7 +53,6 @@ public class Agent {
 		case P2WIN:
 			break;
 		}
-		System.out.println(hitStack.toString());
 		return model;
 	}
 	
@@ -74,7 +73,7 @@ public class Agent {
 			hitStack.push(new int[]{row, col});
 			prevAttack = "H";
 		}
-		else //sunk
+		else if(model.getOffenseBoard(2)[row][col].equals("S"))
 		{
 			int len = model.getBoatLength(1, row, col); //YOU SUNK MY BATTLESHIP
 			for(int i = 0; i < 5; i++)
@@ -88,6 +87,7 @@ public class Agent {
 			for(int i = 0; i < len - 1 ; i++) hitStack.pop();
 			prevAttack = "S";
 		}
+		else prevAttack = "";
 	}
 	
 	private String generateAttack()

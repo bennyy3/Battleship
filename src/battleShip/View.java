@@ -139,7 +139,7 @@ public class View extends BorderPane{
 	 * @param defenseBoard, will either be empty or have a string identifying defense boats
 	 * @param offenseBoard, will contain either " ", 'H', 'M', 'S'
 	 */
-	public void updateView(String[][] defenseBoard, String[][] offenseBoard)
+	public void updateViewDefense(String[][] defenseBoard)
 	{
 		for(int i = 0; i < 10; i++)
 		{
@@ -148,6 +148,16 @@ public class View extends BorderPane{
 				defButton[i][j].setText(defenseBoard[i][j]);
 				if(!defenseBoard[i][j].equals(" ")) defButton[i][j].setStyle(emptyDefenseStyle);
 				else defButton[i][j].setStyle(defenseBoatStyle);
+			}
+		}
+	}
+	
+	public void updateViewOffense(String[][] offenseBoard)
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
 				offButton[i][j].setText(offenseBoard[i][j]);
 				if(offenseBoard[i][j].equals("M")) offButton[i][j].setStyle(missStyle);
 				if(offenseBoard[i][j].equals("H")) offButton[i][j].setStyle(hitStyle);
