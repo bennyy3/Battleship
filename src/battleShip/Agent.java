@@ -45,7 +45,7 @@ public class Agent {
 			row = attack.charAt(0) - 48;
 			col = attack.charAt(2) - 48;
 			model.input("02off"+attack); //we attacked
-			manageNextBestMove(row, col);
+			manageNextBestMove(row, col); //manage AI back end
 			break;
 			
 		case P1WIN:
@@ -76,7 +76,7 @@ public class Agent {
 		}
 		else //sunk
 		{
-			int len = model.getBoatLength(1, row, col);
+			int len = model.getBoatLength(1, row, col); //YOU SUNK MY BATTLESHIP
 			for(int i = 0; i < 5; i++)
 			{
 				if(boatsRemaining[i] == len)
@@ -137,8 +137,9 @@ public class Agent {
 		
 		Random rand = new Random();
 		int upperbound = list.size() - 1;
-		if(upperbound == 0) return list.get(0); // The last potential spot of the ship, we should get a hit here
-		if(upperbound < 0) return rand.nextInt(9) + "," + rand.nextInt(9); //This shouldn't happen unless targeting phase fails
+		int salt = rand.nextInt(5); //We don't want to be completely predictable
+		if(upperbound < 0 || salt == 0) return rand.nextInt(9) + "," + rand.nextInt(9);
+		if(upperbound == 0) return list.get(0);
 		else return list.get(rand.nextInt(upperbound));
 		
 	}
