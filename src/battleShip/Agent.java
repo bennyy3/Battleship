@@ -139,10 +139,10 @@ public class Agent {
 		}
 		
 		Random rand = new Random();
-		int upperbound = list.size() - 1;
+		int upperbound = list.size();
 		int salt = rand.nextInt(5); //We don't want to be completely predictable
-		if(upperbound < 0 || salt == 0) return rand.nextInt(9) + "," + rand.nextInt(9);
-		if(upperbound == 0) return list.get(0);
+		if(upperbound == 0 || salt == 0) return rand.nextInt(10) + "," + rand.nextInt(10);
+		if(upperbound == 1) return list.get(0);
 		else return list.get(rand.nextInt(upperbound));
 		
 	}
