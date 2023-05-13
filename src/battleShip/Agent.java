@@ -44,33 +44,8 @@ public class Agent {
 			String attack = generateAttack(); //save reference of spot
 			row = attack.charAt(0) - 48;
 			col = attack.charAt(2) - 48;
-			model.input("02off"+attack);
-			if(model.getOffenseBoard(2)[row][col].equals("M"))
-			{
-				if(hitStack.size() > 1 && prevAttack.equals("H")) reverseHitStack();
-				prevAttack = "M";
-			}
-			else if(model.getOffenseBoard(2)[row][col].equals("H"))
-			{
-				hitStack.push(new int[]{row, col});
-				prevAttack = "H";
-			}
-			//else if(model.getOffenseBoard(2)[row][col].equals("S"))
-			else //sunk
-			{
-				int len = model.getBoatLength(1, row, col);
-				for(int i = 0; i < 5; i++)
-				{
-					if(boatsRemaining[i] == len)
-					{
-						boatsRemaining[i] = 0;
-						break;
-					}
-				}
-				for(int i = 0; i < len - 1 ; i++) hitStack.pop();
-				prevAttack = "S";
-			}
-			
+			model.input("02off"+attack); //we attacked
+			manageNextBestMove(row, col);
 			break;
 			
 		case P1WIN:
@@ -80,6 +55,39 @@ public class Agent {
 		}
 		System.out.println(hitStack.toString());
 		return model;
+	}
+	
+	/**
+	 * This method keeps track of the hitStack and the prevAttack
+	 * This method is crucial for the tracking down a boat after a hit
+	 * @param row, row of the current attack
+	 * @param col, column of the current attack
+	 */
+	private void manageNextBestMove(int row, int col) {
+		if(model.getOffenseBoard(2)[row][col].equals("M"))
+		{
+			if(hitStack.size() > 1 && prevAttack.equals("H")) reverseHitStack();
+			prevAttack = "M";
+		}
+		else if(model.getOffenseBoard(2)[row][col].equals("H"))
+		{
+			hitStack.push(new int[]{row, col});
+			prevAttack = "H";
+		}
+		else //sunk
+		{
+			int len = model.getBoatLength(1, row, col);
+			for(int i = 0; i < 5; i++)
+			{
+				if(boatsRemaining[i] == len)
+				{
+					boatsRemaining[i] = 0;
+					break;
+				}
+			}
+			for(int i = 0; i < len - 1 ; i++) hitStack.pop();
+			prevAttack = "S";
+		}
 	}
 	
 	private String generateAttack()
@@ -100,14 +108,18 @@ public class Agent {
 			
 		}
 		//else hit an adjacent
-		if(row > 0 && model.getOffenseBoard(2)[row-1][col].equals(" ")) return (row-1) + "," + col;
-		if(row < 9 && model.getOffenseBoard(2)[row+1][col].equals(" ")) return (row+1) + "," + col;
-		if(col > 0 && model.getOffenseBoard(2)[row][col-1].equals(" ")) return row + "," + (col-1);
-		if(col < 9 && model.getOffenseBoard(2)[row][col+1].equals(" ")) return row + "," + (col+1);
-		
-		
-		return getHunt(); //THIS IS A RANDOM shouldn't get here? Also makes compiler happy
-		
+		ArrayList<String> availableAdj = new ArrayList<String>();
+		if(row > 0 && model.getOffenseBoard(2)[row-1][col].equals(" ")) availableAdj.add((row-1) + "," + col);
+		if(row < 9 && model.getOffenseBoard(2)[row+1][col].equals(" ")) availableAdj.add((row+1) + "," + col);
+		if(col > 0 && model.getOffenseBoard(2)[row][col-1].equals(" ")) availableAdj.add(row + "," + (col-1));
+		if(col < 9 && model.getOffenseBoard(2)[row][col+1].equals(" ")) availableAdj.add(row + "," + (col+1));
+		if(availableAdj.size() == 0) return getHunt(); //Should hopefully never run
+		else if(availableAdj.size() == 1) return availableAdj.get(0);
+		else
+		{
+			Random rand = new Random();
+			return availableAdj.get(rand.nextInt(availableAdj.size()-1));
+		}
 	}
 	
 	private String getHunt()
