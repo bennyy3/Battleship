@@ -10,6 +10,8 @@ public class Agent {
 	private Model model;
 	private Stack<int[]> hitStack;
 	
+	private String prevAttack;
+	
 	public Agent(Model model)
 	{
 		this.boatsRemaining = new int[5];
@@ -20,6 +22,7 @@ public class Agent {
 		this.boatsRemaining[4] = 2;
 		this.hitStack = new Stack<int[]>();
 		this.model = model;
+		this.prevAttack = new String();
 		
 	}
 	
@@ -42,9 +45,18 @@ public class Agent {
 			row = attack.charAt(0) - 48;
 			col = attack.charAt(2) - 48;
 			model.input("02off"+attack);
-			
-			if(model.getOffenseBoard(2)[row][col].equals("H")) hitStack.push(new int[]{row, col});
-			else if(model.getOffenseBoard(2)[row][col].equals("S"))
+			if(model.getOffenseBoard(2)[row][col].equals("M"))
+			{
+				if(hitStack.size() > 1 && prevAttack.equals("H")) reverseHitStack();
+				prevAttack = "M";
+			}
+			else if(model.getOffenseBoard(2)[row][col].equals("H"))
+			{
+				hitStack.push(new int[]{row, col});
+				prevAttack = "H";
+			}
+			//else if(model.getOffenseBoard(2)[row][col].equals("S"))
+			else //sunk
 			{
 				int len = model.getBoatLength(1, row, col);
 				for(int i = 0; i < 5; i++)
@@ -55,10 +67,11 @@ public class Agent {
 						break;
 					}
 				}
-				for(int i = 0; i < len - 1 ; i++) hitStack.pop(); //TODO pop the stack
+				for(int i = 0; i < len - 1 ; i++) hitStack.pop();
+				prevAttack = "S";
 			}
-			else if(hitStack.size() > 1) reverseHitStack();
 			
+			break;
 			
 		case P1WIN:
 			break;
@@ -74,15 +87,8 @@ public class Agent {
 		if(hitStack.empty()) return getHunt();
 		int row = hitStack.peek()[0];
 		int col = hitStack.peek()[1];
-		if(hitStack.size() == 1)
+		if(hitStack.size() > 1)
 		{	
-			if(row > 0 && model.getOffenseBoard(2)[row-1][col].equals(" ")) return (row-1) + "," + col;
-			if(row < 9 && model.getOffenseBoard(2)[row+1][col].equals(" ")) return (row+1) + "," + col;
-			if(col > 0 && model.getOffenseBoard(2)[row][col-1].equals(" ")) return row + "," + (col-1);
-			if(col < 9 && model.getOffenseBoard(2)[row][col+1].equals(" ")) return row + "," + (col+1);
-		}
-		else
-		{
 			int prevRow = hitStack.get(hitStack.size()-2)[0];
 			int prevCol = hitStack.get(hitStack.size()-2)[1];
 			
@@ -90,9 +96,17 @@ public class Agent {
 			if(row < 9 && prevRow - row < 0 && model.getOffenseBoard(2)[row+1][col].equals(" ")) return (row+1) + "," + col;
 			if(col > 0 && prevCol - col > 0 && model.getOffenseBoard(2)[row][col-1].equals(" ")) return row + "," + (col-1);
 			if(col < 9 && prevCol - col < 0 && model.getOffenseBoard(2)[row][col+1].equals(" ")) return row + "," + (col+1);
+			
+			
 		}
+		//else hit an adjacent
+		if(row > 0 && model.getOffenseBoard(2)[row-1][col].equals(" ")) return (row-1) + "," + col;
+		if(row < 9 && model.getOffenseBoard(2)[row+1][col].equals(" ")) return (row+1) + "," + col;
+		if(col > 0 && model.getOffenseBoard(2)[row][col-1].equals(" ")) return row + "," + (col-1);
+		if(col < 9 && model.getOffenseBoard(2)[row][col+1].equals(" ")) return row + "," + (col+1);
 		
-		return getHunt(); //THIS IS A RANDOM shouldn't get here?
+		
+		return getHunt(); //THIS IS A RANDOM shouldn't get here? Also makes compiler happy
 		
 	}
 	
