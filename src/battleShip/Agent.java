@@ -75,6 +75,7 @@ public class Agent {
 		}
 		else if(model.getOffenseBoard(2)[row][col].equals("S"))
 		{
+			hitStack.push(new int[] {row, col});
 			int len = model.getBoatLength(1, row, col); //YOU SUNK MY BATTLESHIP
 			for(int i = 0; i < 5; i++)
 			{
@@ -84,7 +85,9 @@ public class Agent {
 					break;
 				}
 			}
-			for(int i = 0; i < len - 1 ; i++) hitStack.pop();
+			System.out.println(len);
+			System.out.println(hitStack);
+			for(int i = 0; i < len; i++) hitStack.pop();
 			prevAttack = "S";
 		}
 		else prevAttack = "";
