@@ -131,14 +131,15 @@ public class View extends BorderPane{
 		rotate.setId("rotate");
 		exitButton = new Button();
 		exitButton.setText("Exit");
-		exitButton.setPrefHeight(80);
+		exitButton.setPrefHeight(30);
 		exitButton.setPrefWidth(100);
 		exitButton.setStyle(sunkStyle);
 		exitButton.setOnAction((evt) -> {
 			System.exit(0);
 		});
-		controlButtons.getChildren().add(rotate);
+		
 		controlButtons.getChildren().add(exitButton);
+		controlButtons.getChildren().add(rotate);
 		setCenter(vbox);
 		setBottom(message);
 		setRight(controlButtons);
