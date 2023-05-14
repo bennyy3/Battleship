@@ -11,6 +11,8 @@ public class Agent {
 	private Stack<int[]> hitStack;
 	private String[][] previousBoard;
 	private String prevAttack;
+	private int[][] distribution;
+	private String message;
 	private int turns;
 	
 	public Agent(Model model)
@@ -21,17 +23,61 @@ public class Agent {
 		this.boatsRemaining[2] = 3;
 		this.boatsRemaining[3] = 3;
 		this.boatsRemaining[4] = 2;
+		this.turns = 0;
 		this.hitStack = new Stack<int[]>();
 		this.model = model;
 		this.prevAttack = new String();
 		this.previousBoard = new String[10][10];
-		this.turns = 0;
-		
+		this.message = new String();
+		this.distribution = new int[10][10];
+		fillDistribution();
 	}
-	
-	public int getTurns()
-	{
-		return this.turns;
+
+	private void fillDistribution() {
+		for(int i = 0; i < 10; i++) distribution[i] = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3, 3}; //fill 3
+		
+		Random rand = new Random();
+		if(rand.nextInt(5) != 0) //Most of the time edges will be weighted as 2
+		{
+			for(int i = 0; i < 10; i++)
+			{
+				distribution[0][i] = 2;
+				distribution[9][i] = 2;
+				distribution[i][0] = 2;
+				distribution[i][9] = 2;
+			}
+		}
+		if(rand.nextInt(3) != 0) //Most of the time this layer will be weighted as 1
+		{
+			for(int i = 1; i < 9; i++)
+			{
+				distribution[1][i] = 1;
+				distribution[8][i] = 1;
+				distribution[i][1] = 1;
+				distribution[i][8] = 1;
+			}
+		}
+
+		for(int i = 2; i < 8; i++)
+		{
+			distribution[2][i] = 2;
+			distribution[7][i] = 2;
+			distribution[i][2] = 2;
+			distribution[i][7] = 2;
+		}
+		
+		
+		if(rand.nextInt(5) == 0)
+		{
+		//THIS IS EQUAL DISTRIBUTION
+			for(int i = 0; i < 10; i++)
+			{
+				for(int j = 0; j < 10; j++)
+				{
+					distribution[i][j] = 3;
+				}
+			}
+		}
 	}
 	
 	public Model action() {
@@ -43,7 +89,7 @@ public class Agent {
 			int row = (int)(Math.random() * 10);
 			int col = (int)(Math.random() * 10);
 			int rotate = (int) ((Math.random() * 10) % 2);
-			model.input(rotate + "2def"+ row + "," + col);
+			message = model.input(rotate + "2def"+ row + "," + col);
 			break;
 		case P1:
 			break;
@@ -52,7 +98,7 @@ public class Agent {
 			String attack = generateAttack(); //save reference of spot
 			row = attack.charAt(0) - 48;
 			col = attack.charAt(2) - 48;
-			model.input("02off"+attack); //we attacked
+			message = model.input("02off"+attack); //we attacked
 			manageNextBestMove(row, col); //manage AI back end
 			break;
 			
@@ -74,20 +120,19 @@ public class Agent {
 	private void manageNextBestMove(int row, int col) {
 		if(model.getOffenseBoard(2)[row][col].equals("M") && previousBoard[row][col].equals(" ")) //prevents repeat bug
 		{
-			turns++;
 			if(hitStack.size() > 1 && prevAttack.equals("H")) reverseHitStack();
 			prevAttack = "M";
+			turns++;
 		}
 		else if(model.getOffenseBoard(2)[row][col].equals("H") && previousBoard[row][col].equals(" "))
 		{
-			turns++;
 			hitStack.push(new int[]{row, col});
 			prevAttack = "H";
+			turns++;
 			
 		}
 		else if(model.getOffenseBoard(2)[row][col].equals("S") && previousBoard[row][col].equals(" "))
 		{
-			turns++;
 			hitStack.push(new int[] {row, col});
 			int len = model.getBoatLength(1, row, col); //YOU SUNK MY BATTLESHIP
 			for(int i = 0; i < 5; i++)
@@ -101,6 +146,7 @@ public class Agent {
 			
 			popSunk();
 			prevAttack = "S";
+			turns++;
 		}
 	}
 	
@@ -158,7 +204,25 @@ public class Agent {
 		int upperbound = list.size();
 		if(upperbound == 0) return rand.nextInt(10) + "," + rand.nextInt(10);
 		if(upperbound == 1) return list.get(0);
-		else return list.get(rand.nextInt(upperbound));
+		else
+			{
+			Stack<String> probabilityStack = new Stack<String>();
+			for(int k = 3; k >= 0; k--)
+			{
+				for(int i = 0; i < list.size(); i++)
+				{
+					String str = list.get(i);
+					int row = str.charAt(0) - 48;
+					int col = str.charAt(2) - 48;
+					if(probabilityStack.isEmpty() && distribution[row][col] == k) probabilityStack.push(str);
+					else if(!probabilityStack.isEmpty() &&
+							distribution[row][col] >= distribution[probabilityStack.get(0).charAt(0)-48][probabilityStack.get(0).charAt(2)-48])
+						probabilityStack.push(str);
+				}
+			}
+			int size = probabilityStack.size();
+			return probabilityStack.get(rand.nextInt(size));
+			}
 		
 	}
 	
@@ -224,5 +288,15 @@ public class Agent {
 			System.out.println("{"+hitStack.get(i)[0]+", " +hitStack.get(i)[1]+"}");
 		}
 		System.out.println(".");
+	}
+	
+	public String getMessage()
+	{
+		return this.message;
+	}
+	
+	public int getTurns()
+	{
+		return this.turns;
 	}
 }

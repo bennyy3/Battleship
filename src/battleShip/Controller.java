@@ -86,6 +86,9 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		while(model.getGameState() == GameState.STARTP2 || model.getGameState() == GameState.P2)
 		{
 			this.model = agent.action();
+			viewP1.setMessage(agent.getMessage());
+			viewP2.setMessage(agent.getMessage());
+			
 		}
 //		Random rand = new Random();
 //		for(int games = 0; games < 10000; games++) {
@@ -106,6 +109,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 //			if(model.getGameState() == GameState.P2WIN) winner = "P2";
 //			System.out.println(agent.getTurns());
 //		}
+		
 		updateView();
 		
 	}
