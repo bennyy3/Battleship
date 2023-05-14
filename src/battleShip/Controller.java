@@ -1,5 +1,6 @@
 package battleShip;
 
+import java.util.Random;
 import java.util.Scanner;
 
 import javafx.application.Application;
@@ -87,7 +88,28 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 			this.model = agent.action();
 			//updateView();
 		}
-			updateView();
+//		Random rand = new Random();
+//		for(int games = 0; games < 10; games++) {
+//		model = new Model();
+//		agent = new Agent(model);
+//		//viewP1 = new View(this, mouseEvent, 1);
+//		//viewP2 = new View(this, mouseEvent, 2);
+//		System.out.println("game: " + games);
+//		while(model.getGameState() == GameState.STARTP1 ||
+//				model.getGameState() == GameState.P1 ||
+//				model.getGameState() == GameState.STARTP2 ||
+//				model.getGameState() == GameState.P2)
+//		{
+//			agent.updateModel(model);
+//			if(model.getGameState() == GameState.STARTP1) model.input(rand.nextInt(2) + "1def" + rand.nextInt(9) + "," + rand.nextInt(9));
+//			else if(model.getGameState() == GameState.P1) model.input("01off" + rand.nextInt(10) + "," + rand.nextInt(10));
+//			else this.model = agent.action();
+//			
+//			updateView();
+//		}
+//		updateView();	
+//		}
+		updateView();
 		
 	}
 	
@@ -99,6 +121,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		viewP1.updateViewDefense(model.getDefenseBoard(1));
 		viewP1.updateViewOffense(model.getOffenseBoard(1));
 		viewP2.updateViewOffense(model.getOffenseBoard(2));
+		viewP2.updateViewDefense(model.getDefenseBoard(2));
 	}
 	
 	/**

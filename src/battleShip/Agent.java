@@ -27,8 +27,7 @@ public class Agent {
 		
 	}
 	
-	public Model action()
-	{
+	public Model action() {
 		switch(model.getGameState())
 		{
 		case STARTP1:
@@ -55,6 +54,7 @@ public class Agent {
 		case P2WIN:
 			break;
 		}
+		printStack();
 		return model;
 	}
 	
@@ -65,18 +65,18 @@ public class Agent {
 	 * @param col, column of the current attack
 	 */
 	private void manageNextBestMove(int row, int col) {
-		if(model.getOffenseBoard(2)[row][col].equals("M"))
+		if(model.getOffenseBoard(2)[row][col].equals("M") && previousBoard[row][col].equals(" ")) //prevents repeat bug
 		{
 			if(hitStack.size() > 1 && prevAttack.equals("H")) reverseHitStack();
 			prevAttack = "M";
 		}
-		else if(model.getOffenseBoard(2)[row][col].equals("H"))
+		else if(model.getOffenseBoard(2)[row][col].equals("H") && previousBoard[row][col].equals(" "))
 		{
 			hitStack.push(new int[]{row, col});
 			prevAttack = "H";
 			
 		}
-		else if(model.getOffenseBoard(2)[row][col].equals("S"))
+		else if(model.getOffenseBoard(2)[row][col].equals("S") && previousBoard[row][col].equals(" "))
 		{
 			hitStack.push(new int[] {row, col});
 			int len = model.getBoatLength(1, row, col); //YOU SUNK MY BATTLESHIP
@@ -93,7 +93,7 @@ public class Agent {
 			popSunk();
 			prevAttack = "S";
 		}
-		else prevAttack = "";
+		//else prevAttack = "";
 	}
 	
 	private String generateAttack()
@@ -121,7 +121,7 @@ public class Agent {
 		if(col < 9 && model.getOffenseBoard(2)[row][col+1].equals(" ")) availableAdj.add(row + "," + (col+1));
 		if(availableAdj.size() == 0 && hitStack.size() > 1)
 		{
-			
+			reverseHitStack();
 			return getHunt(); //TODO this is a problem spot
 		}
 		else if(availableAdj.size() == 0) return getHunt();
@@ -201,13 +201,21 @@ public class Agent {
 						if(hitStack.get(k)[0] == sunkPosition[0] && hitStack.get(k)[1] == sunkPosition[1])
 							{
 							hitStack.remove(k);
-							System.out.println("{" + i + ", " + j + "}");
+							//System.out.println("{" + i + ", " + j + "}");
 							testCount++;
 							}
 					}
 				}
 			}
 		}
-		System.out.println(testCount);
+		//System.out.println(testCount);
+	}
+	
+	private void printStack() {
+		for(int i = 0; i < hitStack.size(); i++)
+		{
+			System.out.println("{"+hitStack.get(i)[0]+", " +hitStack.get(i)[1]+"}");
+		}
+		System.out.println(".");
 	}
 }
