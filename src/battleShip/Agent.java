@@ -6,15 +6,56 @@ import java.util.Stack;
 
 public class Agent {
 	
+	/**
+	 * A list of boats remaining used to determine longest boat left
+	 */
 	private int boatsRemaining[];
+	
+	/**
+	 * reference to the model
+	 */
 	private Model model;
+	
+	/**
+	 * a stack that stores the location of each offensive hit
+	 * index 0: row
+	 * index 1: column
+	 */
 	private Stack<int[]> hitStack;
+	
+	/**
+	 * a reference to the previous board used to see what is different
+	 */
 	private String[][] previousBoard;
+	
+	/**
+	 * reference to the previous attack used for tracking
+	 */
 	private String prevAttack;
+	
+	/**
+	 * stores weights. Higher integers are more attractive to hit.
+	 * The AI will load in random distributions for each game, this allows the AI
+	 * the advantage of randomness
+	 */
 	private int[][] distribution;
+	
+	/**
+	 * The message result of the model after model.input();
+	 */
 	private String message;
+	
+	/**
+	 * Used to count the number of turns it took for the AI to win.
+	 * This is only used when running the game many times to
+	 * calculate the performance of the AI
+	 */
 	private int turns;
 	
+	/**
+	 * constructor
+	 * @param model
+	 */
 	public Agent(Model model)
 	{
 		this.boatsRemaining = new int[5];
@@ -33,6 +74,11 @@ public class Agent {
 		fillDistribution();
 	}
 
+	/**
+	 * This method has some basic distributions and will randomly generate numbers
+	 * to create different distributions
+	 * some distributions perform slightly better than others, but this makes the AI less predictable
+	 */
 	private void fillDistribution() {
 		for(int i = 0; i < 10; i++) distribution[i] = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3, 3}; //fill 3
 		
@@ -47,16 +93,15 @@ public class Agent {
 				distribution[i][9] = 2;
 			}
 		}
-		if(rand.nextInt(3) != 0) //Most of the time this layer will be weighted as 1
+		int layerWeight = rand.nextInt(2) + 1;
+		for(int i = 1; i < 9; i++)
 		{
-			for(int i = 1; i < 9; i++)
-			{
-				distribution[1][i] = 1;
-				distribution[8][i] = 1;
-				distribution[i][1] = 1;
-				distribution[i][8] = 1;
-			}
+			distribution[1][i] = layerWeight;
+			distribution[8][i] = layerWeight;
+			distribution[i][1] = layerWeight;
+			distribution[i][8] = layerWeight;
 		}
+		
 
 		for(int i = 2; i < 8; i++)
 		{
@@ -65,27 +110,18 @@ public class Agent {
 			distribution[i][2] = 2;
 			distribution[i][7] = 2;
 		}
-		
-		
-		if(rand.nextInt(5) == 0)
-		{
-		//THIS IS EQUAL DISTRIBUTION
-			for(int i = 0; i < 10; i++)
-			{
-				for(int j = 0; j < 10; j++)
-				{
-					distribution[i][j] = 3;
-				}
-			}
-		}
 	}
 	
+	/**
+	 * public method that tells the AI its time to take a turn
+	 * @return the model that it has altered, sends back to controller to become the new model
+	 */
 	public Model action() {
 		switch(model.getGameState())
 		{
 		case STARTP1:
 			break;
-		case STARTP2:
+		case STARTP2: //placing phase, random seemed to be just fine
 			int row = (int)(Math.random() * 10);
 			int col = (int)(Math.random() * 10);
 			int rotate = (int) ((Math.random() * 10) % 2);
@@ -93,7 +129,7 @@ public class Agent {
 			break;
 		case P1:
 			break;
-		case P2:
+		case P2: //attacking phase
 			previousBoard = model.getOffenseBoard(2);
 			String attack = generateAttack(); //save reference of spot
 			row = attack.charAt(0) - 48;
@@ -101,13 +137,11 @@ public class Agent {
 			message = model.input("02off"+attack); //we attacked
 			manageNextBestMove(row, col); //manage AI back end
 			break;
-			
 		case P1WIN:
 			break;
 		case P2WIN:
 			break;
 		}
-		//printStack();
 		return model;
 	}
 	
@@ -143,13 +177,18 @@ public class Agent {
 					break;
 				}
 			}
-			
 			popSunk();
 			prevAttack = "S";
 			turns++;
 		}
 	}
 	
+	/**
+	 * This method starts the attack.
+	 * The method will either hunt if there are no hits on the board
+	 * otherwise it will track
+	 * @return
+	 */
 	private String generateAttack()
 	{
 
@@ -175,23 +214,30 @@ public class Agent {
 		if(availableAdj.size() == 0 && hitStack.size() > 1)
 		{
 			reverseHitStack();
-			return getHunt();
+			return getHunt(); //will 'waste' a turn executing one hunt, but then it will return to tracking.
+			//I tried other ways, but they were complicated with very little performance gain.
 		}
 		else if(availableAdj.size() == 0) return getHunt();
-		else if(availableAdj.size() == 1) return availableAdj.get(0);
+		else if(availableAdj.size() == 1) return availableAdj.get(0); //attack the only available spot
 		else
 		{
 			Random rand = new Random();
-			return availableAdj.get(rand.nextInt(availableAdj.size()-1));
+			return availableAdj.get(rand.nextInt(availableAdj.size()-1)); //randomly attack an available adjacent spot
 		}
 	}
 	
+	/**
+	 * This method randomly picks a spot on the board to attack.
+	 * Uses the probability distribution to favor higher weights.
+	 * @return a location to attack
+	 */
 	private String getHunt()
 	{
+		Random rand = new Random();
 		int length = getLongestBoat();
 		
+		//generate a minimal list of locations of a potential hit based on longest boat
 		ArrayList<String> list = new ArrayList<String>();
-		
 		for(int i = 0; i < 10; i++)
 		{
 			for(int j = 0; j < 10; j++)
@@ -200,7 +246,7 @@ public class Agent {
 			}
 		}
 		
-		Random rand = new Random();
+		//Sort the list so that we are only handling the largest weights
 		int upperbound = list.size();
 		if(upperbound == 0) return rand.nextInt(10) + "," + rand.nextInt(10);
 		if(upperbound == 1) return list.get(0);
@@ -215,20 +261,21 @@ public class Agent {
 					int row = str.charAt(0) - 48;
 					int col = str.charAt(2) - 48;
 					if(probabilityStack.isEmpty() && distribution[row][col] == k) probabilityStack.push(str);
+					
+					//I'm sorry, but it works. It can't be reduced because ordering of && prevents bad code from running
 					else if(!probabilityStack.isEmpty() &&
 							distribution[row][col] >= distribution[probabilityStack.get(0).charAt(0)-48][probabilityStack.get(0).charAt(2)-48])
 						probabilityStack.push(str);
 				}
 			}
 			int size = probabilityStack.size();
-			return probabilityStack.get(rand.nextInt(size));
+			return probabilityStack.get(rand.nextInt(size)); //randomly choose from the list of weighted best available moves
 			}
 		
 	}
 	
 	/**
-	 * Returns the longest boat yet to be sunk
-	 * @return
+	 * @return the longest boat yet to be sunk
 	 */
 	private int getLongestBoat()
 	{
@@ -245,6 +292,10 @@ public class Agent {
 		this.model = model;
 	}
 	
+	/**
+	 * reverses the hit stack.
+	 * Used to flip the direction of an attack
+	 */
 	private void reverseHitStack()
 	{
 		Stack<int[]> revStack = new Stack<int[]>();
@@ -256,10 +307,13 @@ public class Agent {
 		this.hitStack = revStack;
 	}
 	
+	/**
+	 * pops all of entries in the hitStack that correspond to the latest sunk boat
+	 * It needs to manually check the previous grid against the new. otherwise the stack would get messed up.
+	 */
 	private void popSunk()
 	{
 		String[][] newBoard = model.getOffenseBoard(2);
-		int testCount = 0;
 		for(int i = 0; i < 10; i++)
 		{
 			for(int j = 0; j < 10; j++)
@@ -270,31 +324,28 @@ public class Agent {
 					for(int k = 0; k < hitStack.size(); k++)
 					{
 						if(hitStack.get(k)[0] == sunkPosition[0] && hitStack.get(k)[1] == sunkPosition[1])
-							{
+						{
 							hitStack.remove(k);
-							//System.out.println("{" + i + ", " + j + "}");
-							testCount++;
-							}
+						}
 					}
 				}
 			}
 		}
-		//System.out.println(testCount);
 	}
 	
-	private void printStack() {
-		for(int i = 0; i < hitStack.size(); i++)
-		{
-			System.out.println("{"+hitStack.get(i)[0]+", " +hitStack.get(i)[1]+"}");
-		}
-		System.out.println(".");
-	}
-	
+	/**
+	 * getter for the message attribute
+	 * @return the message from the model
+	 */
 	public String getMessage()
 	{
 		return this.message;
 	}
 	
+	/**
+	 * getter for the turns attribute
+	 * @return the number of attacks an AI has made.
+	 */
 	public int getTurns()
 	{
 		return this.turns;

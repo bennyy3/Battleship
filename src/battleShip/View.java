@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class View extends BorderPane{
@@ -112,6 +113,7 @@ public class View extends BorderPane{
 		vbox.getChildren().add(offGrid);
 		vbox.getChildren().add(defGrid);
 		message = new Text();
+		message.setFont(Font.font(20));
 		rotate = new Button("rotate");
 		rotate.setPrefHeight(80);
 		rotate.setPrefWidth(100);
