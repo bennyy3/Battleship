@@ -11,6 +11,7 @@ public class Agent {
 	private Stack<int[]> hitStack;
 	private String[][] previousBoard;
 	private String prevAttack;
+	private int turns;
 	
 	public Agent(Model model)
 	{
@@ -24,7 +25,13 @@ public class Agent {
 		this.model = model;
 		this.prevAttack = new String();
 		this.previousBoard = new String[10][10];
+		this.turns = 0;
 		
+	}
+	
+	public int getTurns()
+	{
+		return this.turns;
 	}
 	
 	public Model action() {
@@ -54,7 +61,7 @@ public class Agent {
 		case P2WIN:
 			break;
 		}
-		printStack();
+		//printStack();
 		return model;
 	}
 	
@@ -67,17 +74,20 @@ public class Agent {
 	private void manageNextBestMove(int row, int col) {
 		if(model.getOffenseBoard(2)[row][col].equals("M") && previousBoard[row][col].equals(" ")) //prevents repeat bug
 		{
+			turns++;
 			if(hitStack.size() > 1 && prevAttack.equals("H")) reverseHitStack();
 			prevAttack = "M";
 		}
 		else if(model.getOffenseBoard(2)[row][col].equals("H") && previousBoard[row][col].equals(" "))
 		{
+			turns++;
 			hitStack.push(new int[]{row, col});
 			prevAttack = "H";
 			
 		}
 		else if(model.getOffenseBoard(2)[row][col].equals("S") && previousBoard[row][col].equals(" "))
 		{
+			turns++;
 			hitStack.push(new int[] {row, col});
 			int len = model.getBoatLength(1, row, col); //YOU SUNK MY BATTLESHIP
 			for(int i = 0; i < 5; i++)
