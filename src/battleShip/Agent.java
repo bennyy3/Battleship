@@ -132,7 +132,7 @@ public class Agent {
 		if(availableAdj.size() == 0 && hitStack.size() > 1)
 		{
 			reverseHitStack();
-			return getHunt(); //TODO this is a problem spot
+			return getHunt(); //TODO this is a slow
 		}
 		else if(availableAdj.size() == 0) return getHunt();
 		else if(availableAdj.size() == 1) return availableAdj.get(0);
@@ -146,6 +146,7 @@ public class Agent {
 	private String getHunt()
 	{
 		int length = getLongestBoat();
+		
 		ArrayList<String> list = new ArrayList<String>();
 		
 		for(int i = 0; i < 10; i++)
@@ -158,8 +159,7 @@ public class Agent {
 		
 		Random rand = new Random();
 		int upperbound = list.size();
-		int salt = rand.nextInt(5); //We don't want to be completely predictable
-		if(upperbound == 0 || salt == 0) return rand.nextInt(10) + "," + rand.nextInt(10);
+		if(upperbound == 0) return rand.nextInt(10) + "," + rand.nextInt(10);
 		if(upperbound == 1) return list.get(0);
 		else return list.get(rand.nextInt(upperbound));
 		
