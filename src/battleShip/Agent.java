@@ -72,6 +72,7 @@ public class Agent {
 		{
 			hitStack.push(new int[]{row, col});
 			prevAttack = "H";
+			
 		}
 		else if(model.getOffenseBoard(2)[row][col].equals("S"))
 		{
@@ -85,8 +86,7 @@ public class Agent {
 					break;
 				}
 			}
-			System.out.println(len);
-			System.out.println(hitStack);
+			
 			for(int i = 0; i < len; i++) hitStack.pop();
 			prevAttack = "S";
 		}
@@ -116,7 +116,14 @@ public class Agent {
 		if(row < 9 && model.getOffenseBoard(2)[row+1][col].equals(" ")) availableAdj.add((row+1) + "," + col);
 		if(col > 0 && model.getOffenseBoard(2)[row][col-1].equals(" ")) availableAdj.add(row + "," + (col-1));
 		if(col < 9 && model.getOffenseBoard(2)[row][col+1].equals(" ")) availableAdj.add(row + "," + (col+1));
-		if(availableAdj.size() == 0) return getHunt(); //Should hopefully never run
+		if(availableAdj.size() == 0 && hitStack.size() > 1)
+		{
+			
+			hitStack.push(hitStack.elementAt(0));
+			hitStack.remove(0);
+			return generateAttack();
+		}
+		else if(availableAdj.size() == 0) return getHunt();
 		else if(availableAdj.size() == 1) return availableAdj.get(0);
 		else
 		{
