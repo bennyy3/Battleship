@@ -9,7 +9,7 @@ public class Agent {
 	private int boatsRemaining[];
 	private Model model;
 	private Stack<int[]> hitStack;
-	
+	private String[][] previousBoard;
 	private String prevAttack;
 	
 	public Agent(Model model)
@@ -23,6 +23,7 @@ public class Agent {
 		this.hitStack = new Stack<int[]>();
 		this.model = model;
 		this.prevAttack = new String();
+		this.previousBoard = new String[10][10];
 		
 	}
 	
@@ -41,6 +42,7 @@ public class Agent {
 		case P1:
 			break;
 		case P2:
+			previousBoard = model.getOffenseBoard(2);
 			String attack = generateAttack(); //save reference of spot
 			row = attack.charAt(0) - 48;
 			col = attack.charAt(2) - 48;
@@ -87,7 +89,8 @@ public class Agent {
 				}
 			}
 			
-			for(int i = 0; i < len; i++) hitStack.pop();
+			//for(int i = 0; i < len; i++) hitStack.pop();
+			popSunk();
 			prevAttack = "S";
 		}
 		else prevAttack = "";
@@ -119,9 +122,7 @@ public class Agent {
 		if(availableAdj.size() == 0 && hitStack.size() > 1)
 		{
 			
-			hitStack.push(hitStack.elementAt(0));
-			hitStack.remove(0);
-			return generateAttack();
+			return getHunt(); //TODO this is a problem spot
 		}
 		else if(availableAdj.size() == 0) return getHunt();
 		else if(availableAdj.size() == 1) return availableAdj.get(0);
@@ -182,5 +183,31 @@ public class Agent {
 			revStack.push(hitStack.pop());
 			}
 		this.hitStack = revStack;
+	}
+	
+	private void popSunk()
+	{
+		String[][] newBoard = model.getOffenseBoard(2);
+		int testCount = 0;
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				if(newBoard[i][j].equals("S") && !previousBoard[i][j].equals("S"))
+				{
+					int[] sunkPosition = new int[] {i, j};
+					for(int k = 0; k < hitStack.size(); k++)
+					{
+						if(hitStack.get(k)[0] == sunkPosition[0] && hitStack.get(k)[1] == sunkPosition[1])
+							{
+							hitStack.remove(k);
+							System.out.println("{" + i + ", " + j + "}");
+							testCount++;
+							}
+					}
+				}
+			}
+		}
+		System.out.println(testCount);
 	}
 }
