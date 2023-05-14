@@ -99,15 +99,14 @@ public class Agent {
 				}
 			}
 			
-			//for(int i = 0; i < len; i++) hitStack.pop();
 			popSunk();
 			prevAttack = "S";
 		}
-		//else prevAttack = "";
 	}
 	
 	private String generateAttack()
 	{
+
 		if(hitStack.empty()) return getHunt();
 		int row = hitStack.peek()[0];
 		int col = hitStack.peek()[1];
@@ -120,8 +119,6 @@ public class Agent {
 			if(row < 9 && prevRow - row < 0 && model.getOffenseBoard(2)[row+1][col].equals(" ")) return (row+1) + "," + col;
 			if(col > 0 && prevCol - col > 0 && model.getOffenseBoard(2)[row][col-1].equals(" ")) return row + "," + (col-1);
 			if(col < 9 && prevCol - col < 0 && model.getOffenseBoard(2)[row][col+1].equals(" ")) return row + "," + (col+1);
-			
-			
 		}
 		//else hit an adjacent
 		ArrayList<String> availableAdj = new ArrayList<String>();
@@ -132,7 +129,7 @@ public class Agent {
 		if(availableAdj.size() == 0 && hitStack.size() > 1)
 		{
 			reverseHitStack();
-			return getHunt(); //TODO this is a slow
+			return getHunt();
 		}
 		else if(availableAdj.size() == 0) return getHunt();
 		else if(availableAdj.size() == 1) return availableAdj.get(0);

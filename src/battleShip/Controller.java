@@ -83,34 +83,29 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		viewP2.setMessage(message);
 		
 		agent.updateModel(model); //Giving a fresh copy of the recent turn/s
-//		while(model.getGameState() == GameState.STARTP2 || model.getGameState() == GameState.P2)
-//		{
-//			this.model = agent.action();
-//			//updateView();
-//		}
-		Random rand = new Random();
-		for(int games = 0; games < 10000; games++) {
-		model = new Model();
-		agent = new Agent(model);
-		//viewP1 = new View(this, mouseEvent, 1);
-		//viewP2 = new View(this, mouseEvent, 2);
-		//System.out.println("game: " + games);
-		while(model.getGameState() == GameState.STARTP1 ||
-				model.getGameState() == GameState.P1 ||
-				model.getGameState() == GameState.STARTP2 ||
-				model.getGameState() == GameState.P2)
+		while(model.getGameState() == GameState.STARTP2 || model.getGameState() == GameState.P2)
 		{
-			agent.updateModel(model);
-			if(model.getGameState() == GameState.STARTP1) model.input(rand.nextInt(2) + "1def" + rand.nextInt(10) + "," + rand.nextInt(10));
-			else if(model.getGameState() == GameState.P1) model.input("01off" + rand.nextInt(10) + "," + rand.nextInt(10));
-			else this.model = agent.action();
+			this.model = agent.action();
 		}
-			String winner = "";
-			if(model.getGameState() == GameState.P1WIN) winner = "P1";
-			if(model.getGameState() == GameState.P2WIN) winner = "P2";
-			//System.out.println("Winner: " + winner);
-			System.out.println(agent.getTurns());
-		}
+//		Random rand = new Random();
+//		for(int games = 0; games < 10000; games++) {
+//		model = new Model();
+//		agent = new Agent(model);
+//		while(model.getGameState() == GameState.STARTP1 ||
+//				model.getGameState() == GameState.P1 ||
+//				model.getGameState() == GameState.STARTP2 ||
+//				model.getGameState() == GameState.P2)
+//		{
+//			agent.updateModel(model);
+//			if(model.getGameState() == GameState.STARTP1) model.input(rand.nextInt(2) + "1def" + rand.nextInt(10) + "," + rand.nextInt(10));
+//			else if(model.getGameState() == GameState.P1) model.input("01off" + rand.nextInt(10) + "," + rand.nextInt(10));
+//			else this.model = agent.action();
+//		}
+//			String winner = "";
+//			if(model.getGameState() == GameState.P1WIN) winner = "P1";
+//			if(model.getGameState() == GameState.P2WIN) winner = "P2";
+//			System.out.println(agent.getTurns());
+//		}
 		updateView();
 		
 	}
@@ -123,7 +118,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		viewP1.updateViewDefense(model.getDefenseBoard(1));
 		viewP1.updateViewOffense(model.getOffenseBoard(1));
 		viewP2.updateViewOffense(model.getOffenseBoard(2));
-		viewP2.updateViewDefense(model.getDefenseBoard(2));
+		//viewP2.updateViewDefense(model.getDefenseBoard(2));
 	}
 	
 	/**
