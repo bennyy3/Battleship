@@ -323,6 +323,17 @@ public class Model {
 		return result;
 	}
 	
+	/**
+	 * gets the boat length at a specific location
+	 * @param playerID
+	 * @param row
+	 * @param col
+	 * @return the length of the boat
+	 * 
+	 * If the public seems weird, it is because it is equal to the opponent saying,
+	 * you sunk my battleship, you would know the length
+	 * 
+	 */
 	public int getBoatLength(int playerID, int row, int col)
 	{
 		Player player;

@@ -20,32 +20,37 @@ public class View extends BorderPane{
 	/**
 	 * The upper grid of Battleship, filled with button objects
 	 */
-	GridPane offGrid; //TODO private
+	private GridPane offGrid; //TODO private
 	
 	/**
 	 * The bottom grid of Battleship, filled with button objects
 	 */
-	GridPane defGrid;
+	private GridPane defGrid;
 	
 	/**
 	 * a grid of buttons assigned to the defGrid
 	 */
-	Button[][] defButton;
+	private Button[][] defButton;
 	
 	/**
 	 * a grid of buttons assigned to the offGrid
 	 */
-	Button[][] offButton;
+	private Button[][] offButton;
 	
 	/**
 	 * Button that will rotate the direction of a ship placement
 	 */
-	Button rotate;
+	private Button rotate;
 	
 	/**
 	 * Keeps track of the rotation direction. 0 for horizontal and 1 for vertical
 	 */
 	private int rotateState;
+	
+	/**
+	 * used to exit the game
+	 */
+	private Button exitButton;
 	
 	/**
 	 * these strings are for style of the View and make the code easier to read and keep track of
@@ -80,6 +85,7 @@ public class View extends BorderPane{
 		this.rotateState = 0;
 		offGrid = new GridPane();
 		defGrid = new GridPane();
+		exitButton = new Button();
 		defButton = new Button[10][10];
 		offButton = new Button[10][10];
 		
@@ -110,6 +116,7 @@ public class View extends BorderPane{
 		}
 		
 		VBox vbox = new VBox();
+		VBox controlButtons = new VBox();
 		vbox.getChildren().add(offGrid);
 		vbox.getChildren().add(defGrid);
 		message = new Text();
@@ -122,9 +129,19 @@ public class View extends BorderPane{
 		});
 		rotate.setStyle(rotateStyle);
 		rotate.setId("rotate");
+		exitButton = new Button();
+		exitButton.setText("Exit");
+		exitButton.setPrefHeight(80);
+		exitButton.setPrefWidth(100);
+		exitButton.setStyle(sunkStyle);
+		exitButton.setOnAction((evt) -> {
+			System.exit(0);
+		});
+		controlButtons.getChildren().add(rotate);
+		controlButtons.getChildren().add(exitButton);
 		setCenter(vbox);
 		setBottom(message);
-		setRight(rotate);
+		setRight(controlButtons);
 	}
 	
 	/**
