@@ -74,6 +74,8 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	@Override
 	public void handle(ActionEvent arg0) {
 		Button button = (Button) arg0.getSource();
+		if(button.getId().equals("r")) restartGame();
+		else {
 		int rotation = 0;
 		if(model.getGameState() == GameState.STARTP1) rotation = viewP1.getRotateState();
 		else rotation = viewP2.getRotateState();
@@ -90,6 +92,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 			viewP2.setMessage(agent.getMessage());
 			
 		}
+		}
 		updateView();
 		
 	}
@@ -105,8 +108,20 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 		
 		//show the AI game defense board at the end of the game
 		if(model.getGameState() == GameState.P1WIN
+				|| model.getGameState() == GameState.STARTP1 //Helps Reset
 				|| model.getGameState() == GameState.P2WIN)
 			viewP2.updateViewDefense(model.getDefenseBoard(2));
+	}
+	
+	private void restartGame()
+	{
+		model = new Model();
+		agent = new Agent(model);
+		viewP1.resetView();
+		viewP2.resetView();
+		updateView();
+		viewP1.setMessage(model.startInstructions());
+		viewP2.setMessage(model.startInstructions());
 	}
 	
 	/**
@@ -136,7 +151,7 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 					else
 						viewP2.offHighlight(model.getCurrentBoatLength(), row, col);
 				}
-		   } 
+		   }
 		};
 	
 }

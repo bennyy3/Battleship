@@ -83,17 +83,15 @@ public class Agent {
 		for(int i = 0; i < 10; i++) distribution[i] = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3, 3}; //fill 3
 		
 		Random rand = new Random();
-		if(rand.nextInt(5) != 0) //Most of the time edges will be weighted as 2
+		for(int i = 0; i < 10; i++)
 		{
-			for(int i = 0; i < 10; i++)
-			{
-				distribution[0][i] = 2;
-				distribution[9][i] = 2;
-				distribution[i][0] = 2;
-				distribution[i][9] = 2;
-			}
+			distribution[0][i] = 1;
+			distribution[9][i] = 1;
+			distribution[i][0] = 1;
+			distribution[i][9] = 1;
 		}
-		int layerWeight = rand.nextInt(2) + 1;
+		
+		int layerWeight = rand.nextInt(3) + 1;
 		for(int i = 1; i < 9; i++)
 		{
 			distribution[1][i] = layerWeight;
@@ -109,6 +107,21 @@ public class Agent {
 			distribution[7][i] = 2;
 			distribution[i][2] = 2;
 			distribution[i][7] = 2;
+		}
+		
+	}
+	
+	/**
+	 * after a point, the distribution seems to hurt performance not help
+	 */
+	private void setEvenDistribution()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				distribution[i][j] = 3;
+			}
 		}
 	}
 	
@@ -130,6 +143,7 @@ public class Agent {
 		case P1:
 			break;
 		case P2: //attacking phase
+			if(turns > 30) setEvenDistribution();
 			previousBoard = model.getOffenseBoard(2);
 			String attack = generateAttack(); //save reference of spot
 			row = attack.charAt(0) - 48;

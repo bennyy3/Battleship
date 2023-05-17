@@ -138,7 +138,16 @@ public class View extends BorderPane{
 			System.exit(0);
 		});
 		
+		Button restartButton = new Button();
+		restartButton.setText("Restart");
+		restartButton.setId("r");
+		restartButton.setPrefHeight(80);
+		restartButton.setPrefWidth(100);
+		restartButton.setStyle(hitStyle);
+		restartButton.setOnAction(event);
+		
 		controlButtons.getChildren().add(exitButton);
+		controlButtons.getChildren().add(restartButton);
 		controlButtons.getChildren().add(rotate);
 		setCenter(vbox);
 		setBottom(message);
@@ -261,5 +270,19 @@ public class View extends BorderPane{
 			}
 		}
 		
+	}
+	
+	public void resetView()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				defButton[i][j].setText(" ");
+				defButton[i][j].setStyle(emptyDefenseStyle);
+				offButton[i][j].setText(" ");
+				offButton[i][j].setStyle(emptyOffenseStyle);
+			}
+		}
 	}
 }
