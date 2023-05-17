@@ -32,9 +32,15 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	
 	private Agent agent;
 	
+	/**
+	 * false during placement phase, true for the rest of the game, used for dark theme
+	 */
+	private boolean transition;
+	
 	@Override
 	public void start(Stage arg0) throws Exception {
 		try {
+			transition = false;
 			model = new Model();
 			agent = new Agent(model);
 			viewP1 = new View(this, mouseEvent, 1);
@@ -43,10 +49,12 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 			Scene sceneP2 = new Scene(viewP2, 500, 1000);
 			viewP1.setMessage(model.startInstructions());
 			viewP2.setMessage(model.startInstructions());
+			viewP1.darkTop();
+			viewP2.darkAll();
 			Stage stageP1 = new Stage();
 			Stage stageP2 = new Stage();
 			stageP1.setTitle("Player 1");
-			stageP2.setTitle("Player 2");
+			stageP2.setTitle("AI Agent");
 			stageP1.setScene(sceneP1); //stage is a window
 			stageP2.setScene(sceneP2);
 			stageP1.show(); //puts it on the screen
@@ -102,26 +110,44 @@ public class Controller extends Application implements EventHandler<ActionEvent>
 	 */
 	private void updateView()
 	{
-		viewP1.updateViewDefense(model.getDefenseBoard(1));
-		viewP1.updateViewOffense(model.getOffenseBoard(1));
-		viewP2.updateViewOffense(model.getOffenseBoard(2));
+		if(model.getGameState() == GameState.STARTP1) viewP1.updateViewDefense(model.getDefenseBoard(1));
+		else {	
+			viewP1.updateViewDefense(model.getDefenseBoard(1));
+			viewP1.updateViewOffense(model.getOffenseBoard(1));
+			viewP2.updateViewOffense(model.getOffenseBoard(2));
+		}
+		
+		if(model.getGameState() != GameState.STARTP1 && !transition) transitionTheme();
 		
 		//show the AI game defense board at the end of the game
 		if(model.getGameState() == GameState.P1WIN
-				|| model.getGameState() == GameState.STARTP1 //Helps Reset
+				//|| model.getGameState() == GameState.STARTP1 //Helps Reset
 				|| model.getGameState() == GameState.P2WIN)
 			viewP2.updateViewDefense(model.getDefenseBoard(2));
 	}
 	
+	/**
+	 * restarts the colors of the boards
+	 */
 	private void restartGame()
 	{
 		model = new Model();
 		agent = new Agent(model);
 		viewP1.resetView();
 		viewP2.resetView();
+		viewP1.darkTop();
+		viewP2.darkAll();
+		transition = false;
 		updateView();
 		viewP1.setMessage(model.startInstructions());
 		viewP2.setMessage(model.startInstructions());
+	}
+	
+	private void transitionTheme()
+	{
+		transition = true;
+		viewP1.resetTop();
+		viewP2.resetView();
 	}
 	
 	/**

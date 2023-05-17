@@ -62,6 +62,7 @@ public class View extends BorderPane{
 	String hitStyle = "-fx-border-color: black; -fx-background-color: #ffef94; ";
 	String sunkStyle = "-fx-border-color: black; -fx-background-color: #ed4e4e; ";
 	String rotateStyle = "-fx-background-color: #eec4ff; ";
+	String darkStyle = "-fx-border-color: black; -fx-background-color: #022142; ";
 	
 	
 	/**
@@ -141,7 +142,7 @@ public class View extends BorderPane{
 		Button restartButton = new Button();
 		restartButton.setText("Restart");
 		restartButton.setId("r");
-		restartButton.setPrefHeight(80);
+		restartButton.setPrefHeight(30);
 		restartButton.setPrefWidth(100);
 		restartButton.setStyle(hitStyle);
 		restartButton.setOnAction(event);
@@ -272,6 +273,52 @@ public class View extends BorderPane{
 		
 	}
 	
+	/**
+	 * makes top grid dark
+	 */
+	public void darkTop()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				offButton[i][j].setStyle(darkStyle);
+			}
+		}
+	}
+	
+	/**
+	 * makes all squares dark
+	 */
+	public void darkAll()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				offButton[i][j].setStyle(darkStyle);
+				defButton[i][j].setStyle(darkStyle);
+			}
+		}
+	}
+	
+	/**
+	 * resets just the top grid
+	 */
+	public void resetTop()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+			offButton[i][j].setStyle(emptyOffenseStyle);
+			}
+		}
+	}
+	
+	/**
+	 * resets the view
+	 */
 	public void resetView()
 	{
 		for(int i = 0; i < 10; i++)
